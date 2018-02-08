@@ -5,6 +5,9 @@ public class Range {
     private double to;
 
     public Range(double from, double to) {
+        if (from > to) {
+            throw new RuntimeException("Значение нижней границы больше верхней.");
+        }
         this.from = from;
         this.to = to;
     }
@@ -18,6 +21,9 @@ public class Range {
     }
 
     public void setFrom(double from) {
+        if (from > to) {
+            throw new RuntimeException("Значение нижней границы больше верхней.");
+        }
         this.from = from;
     }
 
