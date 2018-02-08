@@ -1,4 +1,6 @@
-package ru.academits.martin.range;
+package ru.academits.martin.range.exec;
+
+import ru.academits.martin.range.Range;
 
 import java.util.Scanner;
 
