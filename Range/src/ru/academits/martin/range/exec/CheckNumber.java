@@ -5,7 +5,7 @@ import ru.academits.martin.range.Range;
 import java.util.Scanner;
 
 public class CheckNumber {
-    private static double printAndRead(String line) {
+    public static double printAndRead(String line) {
         Scanner scanner = new Scanner(System.in);
         System.out.print(line);
         return scanner.nextDouble();
