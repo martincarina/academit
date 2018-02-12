@@ -2,9 +2,15 @@ package ru.academits.martin.range.exec;
 
 import ru.academits.martin.range.Range;
 
-import static ru.academits.martin.range.exec.CheckNumber.printAndRead;
+import java.util.Scanner;
 
 public class Operations {
+    private static double printAndRead(String line) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print(line);
+        return scanner.nextDouble();
+    }
+
     public static void main(String[] args) {
         double begin1 = printAndRead("Введите начало первого интервала: ");
         double end1 = printAndRead("Введите конец первого интервала: ");
@@ -14,30 +20,24 @@ public class Operations {
         Range interval1 = new Range(begin1, end1);
         Range interval2 = new Range(begin2, end2);
 
-        Range intersection = interval1.getIntersection(interval1, interval2);
+        Range intersection = interval1.getIntersection(interval2);
         if (intersection == null) {
             System.out.println("Интервалы не пересекаются.");
         } else {
             System.out.printf("Длина интервала-пересечения = %f%n", intersection.getLength());
         }
-        Range[] union = interval1.getUnion(interval1, interval2);
+
+        Range[] union = interval1.getUnion(interval2);
         for (int i = 0; i < union.length; i++) {
-            if (union[i] == null) {
-                break;
-            } else {
-                System.out.printf("Длина %d-го интервала-объединения = %f%n", i + 1, union[i].getLength());
-            }
+            System.out.printf("Длина %d-го интервала-объединения = %f%n", i + 1, union[i].getLength());
         }
-        Range[] difference = interval1.getDifference(interval1, interval2);
+
+        Range[] difference = interval1.getDifference(interval2);
         if (difference == null) {
             System.out.println("Первый интервал полностью входит во второй.");
         } else {
             for (int i = 0; i < difference.length; i++) {
-                if (difference[i] == null) {
-                    break;
-                } else {
-                    System.out.printf("Длина %d-го интервала-разности = %f%n", i + 1, difference[i].getLength());
-                }
+                System.out.printf("Длина %d-го интервала-разности = %f%n", i + 1, difference[i].getLength());
             }
         }
     }

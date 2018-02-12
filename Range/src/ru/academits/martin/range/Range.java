@@ -12,11 +12,11 @@ public class Range {
         this.to = to;
     }
 
-    public double getFrom() {
+    public double from() {
         return from;
     }
 
-    public double getTo() {
+    public double to() {
         return to;
     }
 
@@ -42,62 +42,43 @@ public class Range {
         return (number >= from && number <= to);
     }
 
-    public Range getIntersection(Range interval1, Range interval2) {
+    public Range getIntersection(Range interval2) {
         double begin;
         double end;
-        double epsilon = 1.0e-10;
-        if (interval1.getFrom() - interval2.getFrom() > epsilon) {
-            begin = interval1.getFrom();
-        } else {
-            begin = interval2.getFrom();
-        }
-
-        if (interval2.getTo() - interval1.getTo() > epsilon) {
-            end = interval1.getTo();
-        } else {
-            end = interval2.getTo();
-        }
-
-        if (end - begin >= -epsilon) {
+        begin = (this.from > interval2.from) ? this.from : interval2.from;
+        end = (interval2.to > this.to) ? this.to : interval2.to;
+        if (end >= begin) {
             return new Range(begin, end);
         } else {
             return null;
         }
     }
 
-    public Range[] getUnion(Range interval1, Range interval2) {
-        double epsilon = 1.0e-10;
-        Range[] union = new Range[2];
-        if (interval2.getFrom() - interval1.getFrom() >= -epsilon && interval1.getTo() - interval2.getFrom() >= -epsilon && interval2.getTo() - interval1.getTo() >= -epsilon) {
-            union[0] = new Range(interval1.getFrom(), interval2.getTo());
-        } else if (interval2.getFrom() - interval1.getFrom() >= -epsilon && interval1.getTo() - interval2.getFrom() >= -epsilon) {
-            union[0] = interval1;
-        } else if (interval1.getFrom() - interval2.getFrom() > epsilon && interval2.getTo() - interval1.getFrom() >= -epsilon && interval1.getTo() - interval2.getTo() >= -epsilon) {
-            union[0] = new Range(interval2.getFrom(), interval1.getTo());
-        } else if (interval1.getFrom() - interval2.getFrom() > epsilon && interval2.getTo() - interval1.getFrom() >= -epsilon) {
-            union[0] = interval2;
+    public Range[] getUnion(Range interval2) {
+        if (interval2.from >= this.from && this.to >= interval2.from && interval2.to >= this.to) {
+            return new Range[]{new Range(this.from, interval2.to())};
+        } else if (interval2.from >= this.from && this.to >= interval2.from) {
+            return new Range[]{this};
+        } else if (this.from > interval2.from && interval2.to >= this.from && this.to >= interval2.to) {
+            return new Range[]{new Range(interval2.from, this.to)};
+        } else if (this.from > interval2.from && interval2.to >= this.from) {
+            return new Range[]{interval2};
         } else {
-            union[0] = interval1;
-            union[1] = interval2;
+            return new Range[]{this, interval2};
         }
-        return union;
     }
 
-    public Range[] getDifference(Range interval1, Range interval2) {
-        double epsilon = 1.0e-10;
-        Range[] difference = new Range[2];
-        if (interval2.getFrom() - interval1.getFrom() > epsilon && interval1.getTo() - interval2.getTo() > epsilon) {
-            difference[0] = new Range(interval1.getFrom(), interval2.getFrom());
-            difference[1] = new Range(interval2.getTo(), interval1.getTo());
-        } else if (interval2.getFrom() - interval1.getFrom() > epsilon && interval2.getTo() - interval1.getTo() >= -epsilon && interval1.getTo() - interval2.getFrom() > epsilon) {
-            difference[0] = new Range(interval1.getFrom(), interval2.getFrom());
-        } else if (interval2.getFrom() - interval1.getFrom() > epsilon && interval2.getFrom() - interval1.getTo() >= -epsilon) {
-            difference[0] = interval1;
-        } else if (interval1.getFrom() - interval2.getFrom() >= -epsilon && interval1.getTo() - interval2.getTo() > epsilon) {
-            difference[0] = new Range(interval2.getTo(), interval1.getTo());
+    public Range[] getDifference(Range interval2) {
+        if (interval2.from > this.from && this.to() > interval2.to) {
+            return new Range[]{new Range(this.from, interval2.from), new Range(interval2.to, this.to)};
+        } else if (interval2.from > this.from && interval2.to >= this.to && this.to > interval2.from) {
+            return new Range[]{new Range(this.from, interval2.from)};
+        } else if (interval2.from > this.from && interval2.from >= this.to) {
+            return new Range[]{this};
+        } else if (this.from >= interval2.from && this.to > interval2.to) {
+            return new Range[]{new Range(interval2.to, this.to)};
         } else {
             return null;
         }
-        return difference;
     }
 }
