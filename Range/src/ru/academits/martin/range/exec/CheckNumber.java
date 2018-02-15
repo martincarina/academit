@@ -16,11 +16,11 @@ public class CheckNumber {
         double end = 20.0;
 
         Range interval = new Range(begin, end);
-        System.out.printf("Первоначальные границы интервала: %f - %f.%n", interval.from(), interval.to());
+        System.out.printf("Первоначальные границы интервала: %f - %f.%n", interval.getFrom(), interval.getTo());
 
         interval.setFrom(printAndRead("Введите новую нижнюю границу интервала: "));
         interval.setTo(printAndRead("Введите новую верхнюю границу интервала: "));
-        System.out.printf("Новые границы интервала: %f - %f.%n", interval.from(), interval.to());
+        System.out.printf("Новые границы интервала: %f - %f.%n", interval.getFrom(), interval.getTo());
         System.out.printf("Длина интервала = %f%n", interval.getLength());
 
         double number = printAndRead("Введите число: ");

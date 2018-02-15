@@ -12,11 +12,15 @@ public class Range {
         this.to = to;
     }
 
-    public double from() {
+    private Range(Range interval) {
+        this(interval.getFrom(), interval.getTo());
+    }
+
+    public double getFrom() {
         return from;
     }
 
-    public double to() {
+    public double getTo() {
         return to;
     }
 
@@ -45,9 +49,9 @@ public class Range {
     public Range getIntersection(Range interval2) {
         double begin;
         double end;
-        begin = (this.from > interval2.from) ? this.from : interval2.from;
-        end = (interval2.to > this.to) ? this.to : interval2.to;
-        if (end >= begin) {
+        begin = Math.max(this.from, interval2.from);
+        end = Math.min(interval2.to, this.to);
+        if (end > begin) {
             return new Range(begin, end);
         } else {
             return null;
@@ -55,30 +59,33 @@ public class Range {
     }
 
     public Range[] getUnion(Range interval2) {
-        if (interval2.from >= this.from && this.to >= interval2.from && interval2.to >= this.to) {
-            return new Range[]{new Range(this.from, interval2.to())};
-        } else if (interval2.from >= this.from && this.to >= interval2.from) {
-            return new Range[]{this};
-        } else if (this.from > interval2.from && interval2.to >= this.from && this.to >= interval2.to) {
+        Range interval1Copy = new Range(this);
+        Range interval2Copy = new Range(interval2);
+        if (this.getIntersection(interval2) == null) {
+            return new Range[]{interval1Copy, interval2Copy};
+        } else if (interval2.from >= this.from && interval2.to >= this.to) {
+            return new Range[]{new Range(this.from, interval2.to)};
+        } else if (interval2.from >= this.from) {
+            return new Range[]{interval1Copy};
+        } else if (this.from > interval2.from && this.to >= interval2.to) {
             return new Range[]{new Range(interval2.from, this.to)};
-        } else if (this.from > interval2.from && interval2.to >= this.from) {
-            return new Range[]{interval2};
         } else {
-            return new Range[]{this, interval2};
+            return new Range[]{interval2Copy};
         }
     }
 
     public Range[] getDifference(Range interval2) {
-        if (interval2.from > this.from && this.to() > interval2.to) {
+        Range interval1Copy = new Range(this);
+        if (this.getIntersection(interval2) == null) {
+            return new Range[]{interval1Copy};
+        } else if (interval2.from > this.from && this.to > interval2.to) {
             return new Range[]{new Range(this.from, interval2.from), new Range(interval2.to, this.to)};
-        } else if (interval2.from > this.from && interval2.to >= this.to && this.to > interval2.from) {
+        } else if (interval2.from > this.from) {
             return new Range[]{new Range(this.from, interval2.from)};
-        } else if (interval2.from > this.from && interval2.from >= this.to) {
-            return new Range[]{this};
         } else if (this.from >= interval2.from && this.to > interval2.to) {
             return new Range[]{new Range(interval2.to, this.to)};
         } else {
-            return null;
+            return new Range[0];
         }
     }
 }

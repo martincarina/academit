@@ -33,7 +33,7 @@ public class Operations {
         }
 
         Range[] difference = interval1.getDifference(interval2);
-        if (difference == null) {
+        if (difference.length == 0) {
             System.out.println("Первый интервал полностью входит во второй.");
         } else {
             for (int i = 0; i < difference.length; i++) {
