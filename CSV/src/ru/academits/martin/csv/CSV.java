@@ -7,8 +7,7 @@ import java.util.Scanner;
 
 public class CSV {
     public static void main(String[] args) throws FileNotFoundException {
-        String inputFile = args[0];
-        String outputFile = args[1];
+
         try (PrintWriter writer = new PrintWriter(args[1]);
              Scanner scanner = new Scanner(new FileInputStream(args[0]))) {
             boolean isInsideSimpleCell = false;
@@ -34,7 +33,7 @@ public class CSV {
                 final char LT = '<';
                 final char AMP = '&';
 
-                if (!isInsideComplexCell) {//если не внутри сложной ячейки, то начинается новая строка
+                if (!isInsideComplexCell) {
                     writer.print("<tr>");
                 }
 
@@ -42,50 +41,50 @@ public class CSV {
                     char c = line.charAt(index);
                     switch (c) {
                         case QUOTE:
-                            if (isInsideComplexCell) {//надо или нет? может, потом после цикла что-то подмутить-не получается
-                                if (index == line.length() - 1) {// одиночная кавычка в конце сложной ячейки
+                            if (isInsideComplexCell) {
+                                if (index == line.length() - 1) {
                                     writer.print("</td>");
                                     isInsideComplexCell = false;
                                     isComplexCellClosed = true;
                                     ++index;
-                                } else if (line.charAt(index + 1) == COMMA) {//запятая после одиночной кавычки внутри сложной ячейки
+                                } else if (line.charAt(index + 1) == COMMA) {
                                     writer.print("</td>");
                                     isInsideComplexCell = false;
                                     index += 2;
-                                } else if (line.charAt(index + 1) == QUOTE) {//двойная кавычка внутри сложной ячейки
+                                } else if (line.charAt(index + 1) == QUOTE) {
                                     writer.print(c);
                                     index += 2;
                                 } else {
                                     System.out.println("Неверный формат данных.");
                                     return;
                                 }
-                            } else if (isInsideSimpleCell) {//кавычка внутри простой ячейки
+                            } else if (isInsideSimpleCell) {
                                 System.out.println("Неверный формат данных.");
                                 return;
-                            } else {//кавычка снаружи ячеек- начало новой ячейки
+                            } else {
                                 isInsideComplexCell = true;
                                 writer.print("<td>");
                                 ++index;
                             }
                             break;
                         case COMMA:
-                            if (isInsideComplexCell) {//запятая внутри сложной ячейки
+                            if (isInsideComplexCell) {
                                 writer.print(c);
                                 ++index;
-                            } else if (isInsideSimpleCell) {//запятая внутри простой ячейки - коней ячейки
+                            } else if (isInsideSimpleCell) {
                                 writer.print("</td>");
                                 isInsideSimpleCell = false;
                                 ++index;
-                            } else {//запятая снаружи ячеек - пустая ячейка
+                            } else {
                                 writer.print("<td>" + "</td>");
                                 ++index;
                             }
                             break;
                         case SPACE:
                         case TAB:
-                            if (!isInsideComplexCell && !isInsideSimpleCell) {//пробел снаружи ячейки
+                            if (!isInsideComplexCell && !isInsideSimpleCell) {
                                 ++index;
-                            } else {//пробел внутри ячейки
+                            } else {
                                 writer.print(c);
                                 ++index;
                             }
@@ -103,25 +102,25 @@ public class CSV {
                             ++index;
                             break;
                         default:
-                            if (!isInsideComplexCell && !isInsideSimpleCell) {//любой другой символ снаружи ячейки
+                            if (!isInsideComplexCell && !isInsideSimpleCell) {
                                 isInsideSimpleCell = true;
                                 writer.print("<td>" + c);
                                 ++index;
-                            } else {//любой другой символ внутри ячейки
+                            } else {
                                 writer.print(c);
                                 ++index;
                             }
                     }
                 }
-                if (isInsideComplexCell) {//если внутри сложной ячейки-перенос строки внутри ячейки
+                if (isInsideComplexCell) {
                     writer.print("<br/>");
-                } else if (isInsideSimpleCell) {//если внутри простой ячейки-конец ячейки и строки
+                } else if (isInsideSimpleCell) {
                     isInsideSimpleCell = false;
                     writer.println("</td>" + "</tr>");
-                } else if (isComplexCellClosed) {//если снаружи ячейки, но последней ячейкой была сложная и она закрыта
+                } else if (isComplexCellClosed) {
                     isComplexCellClosed = false;
                     writer.println("</tr>");
-                } else {//если снаружи ячейки - значит, пустая ячейка
+                } else {
                     writer.println("<td>" + "</td>" + "</tr>");
                 }
             }
