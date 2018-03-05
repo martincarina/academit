@@ -20,16 +20,16 @@ public class Main {
 
         System.out.printf("Размерность vector3 = %d%n", vector3.getSize());
 
-        vector3.sumOfVectors(vector4);
+        vector3.getSumOfVectors(vector4);
         System.out.printf("К vector3 прибавили vector4 : новый vector3 = %s%n", vector3.toString());
 
-        vector3.differenceOfVectors(vector4);
+        vector3.getDifferenceOfVectors(vector4);
         System.out.printf("Разность vector3 и vector4 : новый vector3 = %s%n", vector3.toString());
 
-        vector4.multiplicationOfVector(2);
+        vector4.multiplyVectorByScalar(2);
         System.out.printf("Умножение на скаляр vector4 : новый vector4 = %s%n", vector4.toString());
-        
-        vector4.inversionOfVector();
+
+        vector4.invertVector();
         System.out.printf("Разворот vector4 : новый vector4 = %s%n", vector4.toString());
 
         System.out.printf("Длина вектора vector3 = %f%n", vector3.getLength());
@@ -51,13 +51,13 @@ public class Main {
             }
         }
 
-        Vector vector9 = Vector.sumOfVectors(vector4, vector3);
+        Vector vector9 = Vector.getSumOfVectors(vector4, vector3);
         System.out.printf("Сумма векторов vector4 и vector3 (static): vector9 = %s%n", vector9.toString());
 
-        Vector vector10 = Vector.differenceOfVectors(vector3, vector4);
+        Vector vector10 = Vector.getDifferenceOfVectors(vector3, vector4);
         System.out.printf("Разность векторов vector3 и vector4 (static): vector10 = %s%n", vector10.toString());
 
-        System.out.printf("Скалярное произведение векторов vector4 и vector5 = %f%n", Vector.scalarMultiplication(vector4, vector3));
+        System.out.printf("Скалярное произведение векторов vector4 и vector5 = %f%n", Vector.getScalarMultiplication(vector4, vector3));
 
     }
 }
