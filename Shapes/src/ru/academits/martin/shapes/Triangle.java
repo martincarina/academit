@@ -1,6 +1,6 @@
 package ru.academits.martin.shapes;
 
-public class Triangle extends Shape {
+public class Triangle implements Shape {
 
     private double x1;
     private double x2;
@@ -10,12 +10,11 @@ public class Triangle extends Shape {
     private double y3;
 
     public Triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
-        super();
         double side1 = Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
         double side2 = Math.sqrt(Math.pow((x2 - x3), 2) + Math.pow((y2 - y3), 2));
         double side3 = Math.sqrt(Math.pow((x3 - x1), 2) + Math.pow((y3 - y1), 2));
         if (side1 >= side1 + side2 || side2 >= side1 + side3 || side3 >= side1 + side2) {
-            throw new IllegalArgumentException("Это не треугольник");//TODO правильное ли исключение используется?
+            throw new IllegalArgumentException("Это не треугольник");
         }
         this.x1 = x1;
         this.y1 = y1;

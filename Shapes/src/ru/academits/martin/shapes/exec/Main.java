@@ -2,10 +2,26 @@ package ru.academits.martin.shapes.exec;
 
 import ru.academits.martin.shapes.*;
 
-import static ru.academits.martin.shapes.Shape.getShapeWithMaxArea;
-import static ru.academits.martin.shapes.Shape.getShapeWithSecondPerimeter;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class Main {
+    private static Shape getShapeWithMaxArea(Shape[] shapes) {
+        if (shapes.length < 1) {
+            throw new IndexOutOfBoundsException("Объектов в массиве должно быть не меньше одного.");
+        }
+        Arrays.sort(shapes, new AreaComparator());
+        return shapes[0];
+    }
+
+    private static Shape getShapeWithSecondPerimeter(Shape[] shapes) {
+        if (shapes.length < 2) {
+            throw new IndexOutOfBoundsException("Объектов в массиве должно быть не меньше двух.");
+        }
+        Arrays.sort(shapes, new PerimeterComparator());
+        return shapes[1];
+    }
+
     public static void main(String[] args) {
         Shape square1 = new Square(5);
 
@@ -18,8 +34,8 @@ public class Main {
         Shape square2 = new Square(5);
 
         System.out.println("Квадрат2:");
-   /*     System.out.printf("Ширина = %f%n", square2.getWidth());
-        System.out.printf("Высота = %f%n", square2.getHeight());*/
+        System.out.printf("Ширина = %f%n", square2.getWidth());
+        System.out.printf("Высота = %f%n", square2.getHeight());
         System.out.printf("Площадь = %f%n", square2.getArea());
         System.out.printf("Периметр = %f%n", square2.getPerimeter());
 
@@ -32,8 +48,8 @@ public class Main {
 
         Shape triangle2 = new Triangle(5, 7, 0, 1, 1, 1);
         System.out.println("Треугольник2:");
-/*        System.out.printf("Ширина = %f%n", triangle2.getWidth());
-        System.out.printf("Высота = %f%n", triangle2.getHeight());*/
+        System.out.printf("Ширина = %f%n", triangle2.getWidth());
+        System.out.printf("Высота = %f%n", triangle2.getHeight());
         System.out.printf("Площадь = %f%n", triangle2.getArea());
         System.out.printf("Периметр = %f%n", triangle2.getPerimeter());
 
@@ -44,10 +60,10 @@ public class Main {
         System.out.printf("Площадь = %f%n", rectangle1.getArea());
         System.out.printf("Периметр = %f%n", rectangle1.getPerimeter());
 
-        Shape rectangle2 = new Rectangle(7, 8);
+        Shape rectangle2 = new Rectangle(4, 8);
         System.out.println("Прямоугольник2:");
- /*       System.out.printf("Ширина = %f%n", rectangle2.getWidth());
-        System.out.printf("Высота = %f%n", rectangle2.getHeight());*/
+        System.out.printf("Ширина = %f%n", rectangle2.getWidth());
+        System.out.printf("Высота = %f%n", rectangle2.getHeight());
         System.out.printf("Площадь = %f%n", rectangle2.getArea());
         System.out.printf("Периметр = %f%n", rectangle2.getPerimeter());
 
@@ -60,6 +76,8 @@ public class Main {
 
         Shape circle2 = new Circle(3);
         System.out.println("Круг2:");
+        System.out.printf("Ширина = %f%n", circle2.getWidth());
+        System.out.printf("Высота = %f%n", circle2.getHeight());
         System.out.printf("Площадь = %f%n", circle2.getArea());
         System.out.printf("Периметр = %f%n", circle2.getPerimeter());
 
@@ -85,10 +103,10 @@ public class Main {
         System.out.println(circle2.toString());
 
         System.out.print("Проверка на равенство фигур: ");
-        if (triangle1.hashCode() != triangle2.hashCode()) {
+        if (rectangle1.hashCode() != rectangle2.hashCode()) {
             System.out.println("Фигуры не равны.");
         } else {
-            if (triangle2.equals(triangle1)) {
+            if (rectangle2.equals(rectangle1)) {
                 System.out.println("Фигуры равны.");
             } else {
                 System.out.println("Фигуры не равны.");
@@ -96,3 +114,22 @@ public class Main {
         }
     }
 }
+
+class AreaComparator implements Comparator<Object> {
+    @Override
+    public int compare(Object object1, Object object2) {
+        Shape shape1 = (Shape) object1;
+        Shape shape2 = (Shape) object2;
+        return Double.compare(shape2.getArea(), shape1.getArea());
+    }
+}
+
+class PerimeterComparator implements Comparator<Object> {
+    @Override
+    public int compare(Object object1, Object object2) {
+        Shape shape1 = (Shape) object1;
+        Shape shape2 = (Shape) object2;
+        return Double.compare(shape2.getPerimeter(), shape1.getPerimeter());
+    }
+}
+

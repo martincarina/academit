@@ -1,10 +1,9 @@
 package ru.academits.martin.shapes;
 
-public class Circle extends Shape {
+public class Circle implements Shape {
     private double radius;
 
     public Circle(double radius) {
-        super();
         if (radius <= 0) {
             throw new IllegalArgumentException("Радиус должен быть больше 0.");
         }

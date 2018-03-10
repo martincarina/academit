@@ -1,10 +1,9 @@
 package ru.academits.martin.shapes;
 
-public class Square extends Shape {
+public class Square implements Shape {
     private double side;
 
     public Square(double side) {
-        super();
         if (side <= 0) {
             throw new IllegalArgumentException("Длина стороны должна быть больше 0.");
         }
