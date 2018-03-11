@@ -39,7 +39,7 @@ public class Square implements Shape {
     public int hashCode() {
         final int prime = 31;
         int hash = 1;
-        hash = prime * hash + (int) side;
+        hash = prime * hash + Double.hashCode(side);
         return hash;
     }
 

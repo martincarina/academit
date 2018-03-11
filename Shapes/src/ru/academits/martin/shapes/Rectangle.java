@@ -42,8 +42,8 @@ public class Rectangle implements Shape {
     public int hashCode() {
         final int prime = 31;
         int hash = 1;
-        hash = prime * hash + (int) side1;
-        hash = prime * hash + (int) side2;
+        hash = prime * hash + Double.hashCode(side1);
+        hash = prime * hash + Double.hashCode(side2);
         return hash;
     }
 

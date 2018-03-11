@@ -3,7 +3,6 @@ package ru.academits.martin.shapes.exec;
 import ru.academits.martin.shapes.*;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 public class Main {
     private static Shape getShapeWithMaxArea(Shape[] shapes) {
@@ -112,24 +111,6 @@ public class Main {
                 System.out.println("Фигуры не равны.");
             }
         }
-    }
-}
-
-class AreaComparator implements Comparator<Object> {
-    @Override
-    public int compare(Object object1, Object object2) {
-        Shape shape1 = (Shape) object1;
-        Shape shape2 = (Shape) object2;
-        return Double.compare(shape2.getArea(), shape1.getArea());
-    }
-}
-
-class PerimeterComparator implements Comparator<Object> {
-    @Override
-    public int compare(Object object1, Object object2) {
-        Shape shape1 = (Shape) object1;
-        Shape shape2 = (Shape) object2;
-        return Double.compare(shape2.getPerimeter(), shape1.getPerimeter());
     }
 }
 
