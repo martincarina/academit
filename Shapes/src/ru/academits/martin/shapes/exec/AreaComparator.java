@@ -1,4 +1,6 @@
-package ru.academits.martin.shapes;
+package ru.academits.martin.shapes.exec;
+
+import ru.academits.martin.shapes.Shape;
 
 import java.util.Comparator;
 
