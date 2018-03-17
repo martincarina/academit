@@ -1,21 +1,16 @@
 package ru.academits.martin.matrix;
 
-import java.util.Arrays;
-
 import static ru.academits.martin.matrix.Vector.getScalarMultiplication;
 
 public class Matrix {
-    //     private double[][] components;
+
     private Vector[] components;
 
     public Matrix(int n, int m) {
         if (n <= 0 || m <= 0) {
             throw new IllegalArgumentException("Размерности должны быть не меньше 1.");
         }
- /*       components = new double[n][m];
-        for (int i = 0; i < n; i++) {
-            System.out.println(Arrays.toString(components[i]));
-        }*/
+
         components = new Vector[n];
         for (int i = 0; i < n; i++) {
             components[i] = new Vector(m);
@@ -36,7 +31,10 @@ public class Matrix {
         if (vectors.length <= 0) {
             throw new IllegalArgumentException("Размерность массива векторов должна быть не меньше 1.");
         }
-        components = Arrays.copyOf(vectors, vectors.length);
+        components = new Vector[vectors.length];
+        for (int i = 0; i < vectors.length; i++) {
+            components[i] = new Vector(vectors[i]);
+        }
     }
 
     public Matrix(Matrix matrix) {
@@ -102,6 +100,24 @@ public class Matrix {
         }
     }
 
+    public void getSumOfMatrices(Matrix matrix) {
+        if (components.length != matrix.components.length || components[0].getSize() != matrix.components[0].getSize()) {
+            throw new IllegalArgumentException("Число столбцов и строк в матрицах должно совпадать.");
+        }
+        for (int i = 0; i < components.length; i++) {
+            components[i].getSumOfVectors(matrix.components[i]);
+        }
+    }
+
+    public void getDifferenceOfMatrices(Matrix matrix) {
+        if (components.length != matrix.components.length || components[0].getSize() != matrix.components[0].getSize()) {
+            throw new IllegalArgumentException("Число столбцов и строк в матрицах должно совпадать.");
+        }
+        for (int i = 0; i < components.length; i++) {
+            components[i].getDifferenceOfVectors(matrix.components[i]);
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -116,5 +132,28 @@ public class Matrix {
         }
         sb.append("}");
         return sb.toString();
+    }
+
+    public static Matrix getSumOfMatrices(Matrix matrix1, Matrix matrix2) {
+        if (matrix1.components.length != matrix2.components.length || matrix1.components[0].getSize() != matrix2.components[0].getSize()) {
+            throw new IllegalArgumentException("Число столбцов и строк в матрицах должно совпадать.");
+        }
+        Matrix sumMatrices = new Matrix(matrix1);
+        sumMatrices.getSumOfMatrices(matrix2);
+        return sumMatrices;
+    }
+    public static Matrix getDifferenceOfMatrices(Matrix matrix1, Matrix matrix2) {
+        if (matrix1.components.length != matrix2.components.length || matrix1.components[0].getSize() != matrix2.components[0].getSize()) {
+            throw new IllegalArgumentException("Число столбцов и строк в матрицах должно совпадать.");
+        }
+        Matrix diffMatrices = new Matrix(matrix1);
+        diffMatrices.getDifferenceOfMatrices(matrix2);
+        return diffMatrices;
+    }
+    public static Matrix multiplyMatrixByMatrix(Matrix matrix1, Matrix matrix2){
+        if (matrix1.components[0].getSize() != matrix2.components.length) {
+            throw new IllegalArgumentException("Число столбцов в первой матрице должно быть равно числу строк во второй.");
+        }
+        return matrix1;//TODO использовать скалярное произведение из класса Vector
     }
 }

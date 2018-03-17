@@ -26,21 +26,34 @@ public class Main {
         System.out.printf("Размерность матрицы: n = %d, m = %d%n", matrixSize[0], matrixSize[1]);
 
         Vector vector3 = matrix1.getRow(1);
-        System.out.printf("Вектор-строка с индексом 1 matrix1: %s%n",vector3.toString());
+        System.out.printf("Вектор-строка с индексом 1 matrix1: %s%n", vector3.toString());
 
         matrix0.setRow(0, vector2);
         System.out.printf("matrix0 = %s%n", matrix0.toString());
 
         Vector vector4 = matrix0.getColumn(0);
-        System.out.printf("Вектор-столбец с индексом 1 matrix0: %s%n",vector4.toString());
+        System.out.printf("Вектор-столбец с индексом 1 matrix0: %s%n", vector4.toString());
 
         Matrix matrix4 = matrix1.transposeMatrix();
         System.out.printf("matrix4 = %s%n", matrix4.toString());
 
-        matrix1.multiplyMatrixByScalar(2);
-        System.out.printf("Умножение на скаляр matrix1 : новая matrix1 = %s%n", matrix1.toString());
+        matrix2.multiplyMatrixByScalar(2);
+        System.out.printf("Умножение на скаляр matrix2 : новая matrix2 = %s%n", matrix2.toString());
 
         Vector vector5 = matrix4.multiplyMatrixByVector(vector2);
-        System.out.printf("Результат умножения матрицы на вектор: %s%n",vector5.toString());
+        System.out.printf("Результат умножения матрицы на вектор: %s%n", vector5.toString());
+
+        matrix2.getSumOfMatrices(matrix3);
+        System.out.printf("Сумма матриц matrix2 и matrix3: новая matrix2 = %s%n", matrix2.toString());
+
+        matrix2.getDifferenceOfMatrices(matrix3);
+        System.out.printf("Разность матриц matrix2 и matrix3: новая matrix2 = %s%n", matrix2.toString());
+
+        Matrix matricesSum = Matrix.getSumOfMatrices(matrix2, matrix3);
+        System.out.printf("Сумма matrix2 и matrix3 (static): matricesSum = %s%n", matricesSum.toString());
+
+        Matrix matricesDiff = Matrix.getDifferenceOfMatrices(matrix2, matrix3);
+        System.out.printf("Разность matrix2 и matrix3 (static): matricesDiff = %s%n", matricesDiff.toString());
+
     }
 }
