@@ -88,9 +88,48 @@ public class Matrix {
         }
     }
 
+    public double getDeterminant() {
+        if (components.length != components[0].getSize()) {
+            throw new IllegalArgumentException("Матрица должна быть квадратной.");
+        }
+
+        Matrix copyOfMatrix = new Matrix(this);
+
+        for (int i = 0; i < copyOfMatrix.components[0].getSize(); i++) {
+            boolean isNullColumn = false;
+            int j = i;
+            while (copyOfMatrix.components[j].getComponent(i) == 0) {
+                if (j == copyOfMatrix.components.length - 1) {
+                    isNullColumn = true;
+                    break;
+                }
+                j++;
+            }
+            if (isNullColumn) {
+                continue;
+            }
+
+            Vector tempVector = copyOfMatrix.components[j];
+            copyOfMatrix.components[j] = copyOfMatrix.components[i];
+            copyOfMatrix.components[i] = tempVector;
+
+            for (int k = i + 1; k < copyOfMatrix.components.length; k++) {
+                double coefficient = copyOfMatrix.components[k].getComponent(i) / copyOfMatrix.components[i].getComponent(i);
+                Vector tempRaw = new Vector(copyOfMatrix.components[i]);
+                tempRaw.multiplyVectorByScalar(coefficient);
+                copyOfMatrix.components[k].getDifferenceOfVectors(tempRaw);
+            }
+        }
+        double determinant = 1;
+        for (int i = 0; i < copyOfMatrix.components.length; i++) {
+            determinant *= copyOfMatrix.components[i].getComponent(i);
+        }
+        return determinant;
+    }
+
     public Vector multiplyMatrixByVector(Vector vector) {
         if (components[0].getSize() != vector.getSize()) {
-            throw new IllegalArgumentException("Число столбцов в матрице должно быть равно размерности вектора.");//TODO может, другое исключение надо
+            throw new IllegalArgumentException("Число столбцов в матрице должно быть равно размерности вектора.");
         } else {
             Vector vectorResult = new Vector(components.length);
             for (int i = 0; i < components.length; i++) {
@@ -142,6 +181,7 @@ public class Matrix {
         sumMatrices.getSumOfMatrices(matrix2);
         return sumMatrices;
     }
+
     public static Matrix getDifferenceOfMatrices(Matrix matrix1, Matrix matrix2) {
         if (matrix1.components.length != matrix2.components.length || matrix1.components[0].getSize() != matrix2.components[0].getSize()) {
             throw new IllegalArgumentException("Число столбцов и строк в матрицах должно совпадать.");
@@ -150,10 +190,17 @@ public class Matrix {
         diffMatrices.getDifferenceOfMatrices(matrix2);
         return diffMatrices;
     }
-    public static Matrix multiplyMatrixByMatrix(Matrix matrix1, Matrix matrix2){
+
+    public static Matrix multiplyMatrixByMatrix(Matrix matrix1, Matrix matrix2) {
         if (matrix1.components[0].getSize() != matrix2.components.length) {
             throw new IllegalArgumentException("Число столбцов в первой матрице должно быть равно числу строк во второй.");
         }
-        return matrix1;//TODO использовать скалярное произведение из класса Vector
+        double[][] components = new double[matrix1.components.length][matrix2.components[0].getSize()];
+        for (int i = 0; i < matrix1.components.length; i++) {
+            for (int j = 0; j < matrix2.components[i].getSize(); j++) {
+                components[i][j] = getScalarMultiplication(matrix1.getRow(i), matrix2.getColumn(j));
+            }
+        }
+        return new Matrix(components);
     }
 }

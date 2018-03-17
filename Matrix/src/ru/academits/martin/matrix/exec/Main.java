@@ -55,5 +55,15 @@ public class Main {
         Matrix matricesDiff = Matrix.getDifferenceOfMatrices(matrix2, matrix3);
         System.out.printf("Разность matrix2 и matrix3 (static): matricesDiff = %s%n", matricesDiff.toString());
 
+        Matrix matricesMultiplication = Matrix.multiplyMatrixByMatrix(matrix1,matrix4);
+        System.out.printf("Произведение матриц matrix1 и matrix4 (static): matricesMultiplication = %s%n", matricesMultiplication.toString());
+
+        double[][] array3 = {{5,7,1},{-4,1,0},{2,0,3}};
+        Matrix matrix5 = new Matrix(array3);
+        System.out.printf("Определитель матрицы matrix5 = %f%n", matrix5.getDeterminant());
+
+       double[][] array4 = {{2,4,1,1},{0,2,1,0},{2,1,1,3},{4,0,2,3}};
+        Matrix matrix6 = new Matrix(array4);
+        System.out.printf("Определитель матрицы matrix6 = %f%n", matrix6.getDeterminant());
     }
 }
