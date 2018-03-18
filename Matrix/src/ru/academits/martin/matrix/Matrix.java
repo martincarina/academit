@@ -1,6 +1,8 @@
 package ru.academits.martin.matrix;
 
-import static ru.academits.martin.matrix.Vector.getScalarMultiplication;
+import ru.academits.martin.vector.Vector;
+
+import static ru.academits.martin.vector.Vector.getScalarMultiplication;
 
 public class Matrix {
 
@@ -57,7 +59,7 @@ public class Matrix {
         if (index >= components.length) {
             throw new IndexOutOfBoundsException("Индекс должен быть меньше количества строк в матрице.");
         } else if (vector.getSize() != components[index].getSize()) {
-            System.out.println("Размерность вектора должно быть равно количеству столбцов в матрице");
+            System.out.println("Размерность вектора должна быть равна количеству столбцов в матрице");
         } else {
             components[index] = new Vector(vector);
         }
