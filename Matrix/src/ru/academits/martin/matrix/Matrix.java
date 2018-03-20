@@ -110,11 +110,7 @@ public class Matrix {
         for (int i = 0; i < getNumberOfColumns(); i++) {
             vectors[i] = getColumn(i);
         }
-        int newNumberOfRows = getNumberOfColumns();
-        rows = new Vector[newNumberOfRows];
-        for (int i = 0; i < newNumberOfRows; i++) {
-            rows[i] = new Vector(vectors[i]);
-        }
+        rows = vectors;
     }
 
     public void multiplyMatrixByScalar(double scalar) {
