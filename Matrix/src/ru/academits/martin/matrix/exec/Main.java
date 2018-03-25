@@ -8,6 +8,13 @@ public class Main {
         Matrix matrix0 = new Matrix(3, 2);
         System.out.printf("matrix0 = %s%n", matrix0.toString());
 
+ /*       Vector vector01 = new Vector(2);
+        double[] array02 = {2, 3, 3};
+        Vector vector02 = new Vector(array02);
+        Vector[] vectors0 = {vector01, vector02};
+        Matrix matrix00 = new Matrix(vectors0);
+        System.out.printf("matrix00 = %s%n", matrix00.toString());*/
+
         double[][] array1 = {{1, 1, 1}, {2, 2, 2}};
         Matrix matrix1 = new Matrix(array1);
         System.out.printf("matrix1 = %s%n", matrix1.toString());
@@ -22,8 +29,9 @@ public class Main {
         Matrix matrix3 = new Matrix(matrix2);
         System.out.printf("Копия matrix2: matrix3 = %s%n", matrix3.toString());
 
-        int[] matrixSize = matrix1.getSize();
-        System.out.printf("Размерность матрицы: n = %d, m = %d%n", matrixSize[0], matrixSize[1]);
+        int numberOfRows = matrix1.getNumberOfRows();
+        int numberOfColumns = matrix1.getNumberOfColumns();
+        System.out.printf("Размерность матрицы matrix1: Число строк = %d, Число столбцов = %d%n", numberOfRows, numberOfColumns);
 
         Vector vector3 = matrix1.getRow(1);
         System.out.printf("Вектор-строка с индексом 1 matrix1: %s%n", vector3.toString());
@@ -34,8 +42,10 @@ public class Main {
         Vector vector4 = matrix0.getColumn(0);
         System.out.printf("Вектор-столбец с индексом 1 matrix0: %s%n", vector4.toString());
 
-        Matrix matrix4 = matrix1.transposeMatrix();
+        Matrix matrix4 = new Matrix(matrix1);
         System.out.printf("matrix4 = %s%n", matrix4.toString());
+        matrix4.transposeMatrix();
+        System.out.printf("Транспонированная matrix4 = %s%n", matrix4.toString());
 
         matrix2.multiplyMatrixByScalar(2);
         System.out.printf("Умножение на скаляр matrix2 : новая matrix2 = %s%n", matrix2.toString());
