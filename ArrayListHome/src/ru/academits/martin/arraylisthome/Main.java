@@ -32,13 +32,13 @@ public class Main {
         ArrayList<Integer> list1 = new ArrayList<>(Arrays.asList(1, 5, 2, 1, 3, 5));
         ArrayList<Integer> list2 = new ArrayList<>();
         index = 0;
-        do {
+        while (index < list1.size()) {
             int number = list1.get(index);
             if (!list2.contains(number)) {
                 list2.add(number);
             }
             ++index;
-        } while (index < list1.size());
+        }
         System.out.printf("list1: %s%n", list1);
         System.out.printf("list2: %s%n", list2);
     }
