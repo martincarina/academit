@@ -21,7 +21,7 @@ public class Main {
         System.out.println(list.getSize());
 
         list.insertInBeginning(200);
-        list.insertInBeginning(300);
+        list.insertInBeginning(null);
         list.insertInBeginning(400);
         System.out.println("Новый размер списка");
         System.out.println(list.getSize());
@@ -78,6 +78,15 @@ public class Main {
         for (int i = 0; i < list2.getSize(); i++) {
             System.out.println(list2.getElement(i));
         }
-    }
 
+        System.out.println("Вставка элемента в конец списка");
+        System.out.println("Размер списка до вставки:");
+        System.out.println(list.getSize());
+        list.insertElement(3, 10);
+        System.out.println("Размер списка после вставки:");
+        System.out.println(list.getSize());
+        for (int i = 0; i < list.getSize(); i++) {
+            System.out.println(list.getElement(i));
+        }
+    }
 }
