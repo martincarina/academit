@@ -15,53 +15,36 @@ public class SinglyLinkedList<T> {
         return head.getData();
     }
 
-    private ListItem<T> findPrevLinkByIndex(int index) {
+    private ListItem<T> findLinkByIndex(int index) {
         int currentIndex = 0;
-        ListItem<T> prevLink = null;
-        for (ListItem<T> link = head; link != null; link = link.getNext()) {
+        ListItem<T> link = head;
+        while (link.getNext() != null) {
             if (currentIndex == index) {
                 break;
             }
-            prevLink = link;
             ++currentIndex;
+            link = link.getNext();
         }
-        return prevLink;
+        return link;
     }
 
     public T getElement(int index) {
-        if (size == 0) {
-            throw new NullPointerException("Список пуст.");
-        }
         if (index >= size || index < 0) {
             throw new IndexOutOfBoundsException("Индекс отрицательный или превышает размер списка.");
         }
-        ListItem<T> prevLink = findPrevLinkByIndex(index);
-        if (prevLink == null) {
-            return head.getData();
-        } else {
-            return prevLink.getNext().getData();
-        }
+        ListItem<T> link = findLinkByIndex(index);
+        return link.getData();
     }
 
     public T changeElement(int index, T data) {
-        if (size == 0) {
-            throw new NullPointerException("Список пуст.");
-        }
         if (index >= size || index < 0) {
             throw new IndexOutOfBoundsException("Индекс отрицательный или превышает размер списка.");
         }
-        ListItem<T> prevLink = findPrevLinkByIndex(index);
-        ListItem<T> link;
-        if (prevLink == null) {
-            link = head;
-        } else {
-            link = prevLink.getNext();
-        }
+        ListItem<T> link = findLinkByIndex(index);
         T oldData = link.getData();
         link.setData(data);
         return oldData;
     }
-
 
     public void insertInBeginning(T data) {
         head = new ListItem<>(data, head);
@@ -69,16 +52,14 @@ public class SinglyLinkedList<T> {
     }
 
     public void insertElement(int index, T data) {
-        if (size == 0) {
-            throw new NullPointerException("Список пуст.");
-        }
         if (index > size || index < 0) {
             throw new IndexOutOfBoundsException("Индекс отрицательный или превышает размер списка.");
         }
-        ListItem<T> prevLink = findPrevLinkByIndex(index);
-        if (prevLink == null) {
+
+        if (index == 0) {
             insertInBeginning(data);
         } else {
+            ListItem<T> prevLink = findLinkByIndex(index - 1);
             ListItem<T> node = new ListItem<>(data);
             ListItem<T> link = prevLink.getNext();
             prevLink.setNext(node);
@@ -86,7 +67,6 @@ public class SinglyLinkedList<T> {
             ++size;
         }
     }
-
 
     public T removeFirstElement() {
         if (size == 0) {
@@ -99,17 +79,14 @@ public class SinglyLinkedList<T> {
     }
 
     public T removeElementByIndex(int index) {
-        if (size == 0) {
-            throw new NullPointerException("Список пуст.");
-        }
         if (index >= size || index < 0) {
             throw new IndexOutOfBoundsException("Индекс отрицательный или превышает размер списка.");
         }
-        ListItem<T> prevLink = findPrevLinkByIndex(index);
         T oldData;
-        if (prevLink == null) {
-            oldData = removeFirstElement();
+        if (index == 0) {
+                      oldData = removeFirstElement();
         } else {
+            ListItem<T> prevLink = findLinkByIndex(index - 1);
             ListItem<T> link = prevLink.getNext();
             oldData = link.getData();
             prevLink.setNext(link.getNext());
@@ -124,7 +101,7 @@ public class SinglyLinkedList<T> {
         }
         boolean isValueRemoved = false;
         for (ListItem<T> link = head, prev = null; link != null; prev = link, link = link.getNext()) {
-            if ((link.getData() == null) ? value == null : link.getData().equals(value)) {
+            if (value.equals(link.getData())) {
                 if (prev == null) {
                     removeFirstElement();
                 } else {
