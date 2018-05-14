@@ -1,5 +1,7 @@
 package ru.academits.martin.list;
 
+import java.util.Objects;
+
 public class SinglyLinkedList<T> {
     private ListItem<T> head;
     private int size;
@@ -84,7 +86,7 @@ public class SinglyLinkedList<T> {
         }
         T oldData;
         if (index == 0) {
-                      oldData = removeFirstElement();
+            oldData = removeFirstElement();
         } else {
             ListItem<T> prevLink = findLinkByIndex(index - 1);
             ListItem<T> link = prevLink.getNext();
@@ -100,16 +102,17 @@ public class SinglyLinkedList<T> {
             return false;
         }
         boolean isValueRemoved = false;
-        for (ListItem<T> link = head, prev = null; link != null; prev = link, link = link.getNext()) {
-            if (value.equals(link.getData())) {
-                if (prev == null) {
-                    removeFirstElement();
-                } else {
+        if (Objects.equals(value, head.getData())) {
+            removeFirstElement();
+            isValueRemoved = true;
+        } else {
+            for (ListItem<T> link = head.getNext(), prev = head; link != null; prev = link, link = link.getNext()) {
+                if (Objects.equals(value, link.getData())) {
                     prev.setNext(link.getNext());
                     --size;
+                    isValueRemoved = true;
+                    break;
                 }
-                isValueRemoved = true;
-                break;
             }
         }
         return isValueRemoved;

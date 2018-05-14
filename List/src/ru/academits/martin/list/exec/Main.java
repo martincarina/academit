@@ -88,5 +88,16 @@ public class Main {
         for (int i = 0; i < list.getSize(); i++) {
             System.out.println(list.getElement(i));
         }
+
+        System.out.println("Удаление элемента по значению(null)");
+        if (list.isRemovedElementByValue(null)) {
+            System.out.println("true");
+        } else {
+            System.out.println("false");
+        }
+
+        for (int i = 0; i < list.getSize(); i++) {
+            System.out.println(list.getElement(i));
+        }
     }
 }
