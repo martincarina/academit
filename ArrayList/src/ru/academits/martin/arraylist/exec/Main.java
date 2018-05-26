@@ -49,27 +49,34 @@ public class Main {
         lines0.add(0, "b");
         System.out.println("Новое значение");
         System.out.println(lines0.get(0));
+        System.out.println("Добавление коллекции по индексу");
         System.out.println(lines.addAll(2, lines0));
         System.out.println("Длина списка");
         System.out.println(lines.size());
-
+        System.out.println("Элементы списка lines");
         for (String s : lines) {
             System.out.println(s);
         }
-
+        System.out.println("Проверка наличия в списке элемента");
         System.out.println(lines0.contains("a"));
+        System.out.println("Удаление элемента по индексу");
         System.out.println(lines0.remove("a"));
+        System.out.println("Поиск индекса первого вхождения элемента");
         System.out.println(lines.indexOf("b"));
+        System.out.println("Поиск индекса последнего вхождения элемента");
         System.out.println(lines.lastIndexOf("b"));
 
-        System.out.println("перевод коллекции в массив");
+        System.out.println("Перевод коллекции в массив");
         String[] strings = lines.toArray(new String[10]);
         for (String s : strings) {
             System.out.println(s);
         }
 
+        System.out.println("Обрезание массива до длины списка");
         lines2.trimToSize();
+        System.out.println("Добавление элемента в конец");
         lines2.add("t");
+        System.out.println("Элементы списка lines2");
         for (String s : lines2) {
             System.out.println(s);
         }
@@ -83,10 +90,11 @@ public class Main {
 
         System.out.println("ListIterator");
         ListIterator<String> listIterator = lines.listIterator();
+        System.out.println("Печать списка");
         while (listIterator.hasNext()) {
             System.out.println(listIterator.next());
         }
-        System.out.println("Set(Печать списка в обратном порядке)");
+        System.out.println("Set+Печать списка в обратном порядке");
         listIterator.set("u");
         while (listIterator.hasPrevious()) {
             System.out.println(listIterator.previous());
@@ -99,14 +107,14 @@ public class Main {
         while (listIterator.hasNext()) {
             System.out.println(listIterator.next());
         }
-        System.out.println("Add(Печать списка в обратном порядке)");
+        System.out.println("Add+Печать списка в обратном порядке");
         listIterator.add("b");
         while (listIterator.hasPrevious()) {
             System.out.println(listIterator.previous());
         }
 
         lines0.add("a");
-        System.out.println("lines0:");
+        System.out.println("Элементы списка lines0:");
         for (String s : lines0) {
             System.out.println(s);
         }

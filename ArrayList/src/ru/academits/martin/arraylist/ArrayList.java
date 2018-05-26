@@ -68,7 +68,7 @@ public class ArrayList<T> implements List<T> {
         if (a.length < length) {
             return (T1[]) Arrays.copyOf(items, length, a.getClass());
         }
-        System.arraycopy((T1[]) items, 0, a, 0, length);
+        a = (T1[]) Arrays.copyOf(items, length, a.getClass());
         if (a.length > length) {
             a[length] = null;
         }
@@ -166,11 +166,12 @@ public class ArrayList<T> implements List<T> {
         if (c == null) {
             throw new NullPointerException("Переданная коллекция null");
         }
+        T[] array = (T[]) c.toArray();
         modCount++;
         int oldLength = length;
         length += c.size();
         ensureCapacity(length);
-        System.arraycopy((T[]) c.toArray(), 0, items, oldLength, c.size());
+        System.arraycopy(array, 0, items, oldLength, c.size());
         return true;
     }
 
@@ -190,15 +191,16 @@ public class ArrayList<T> implements List<T> {
         if (index < 0 || index > length) {
             throw new IndexOutOfBoundsException("Индекс отрицательный или превышает размер списка.");
         }
+        T[] array = (T[]) c.toArray();
         modCount++;
         int oldLength = length;
         length += c.size();
         ensureCapacity(length);
         if (index < length - 1) {
             System.arraycopy(items, index, items, index + c.size(), length - index - c.size());
-            System.arraycopy((T[]) c.toArray(), 0, items, index, c.size());
+            System.arraycopy(array, 0, items, index, c.size());
         } else {
-            System.arraycopy((T[]) c.toArray(), 0, items, oldLength, c.size());
+            System.arraycopy(array, 0, items, oldLength, c.size());
         }
         return true;
     }
@@ -416,6 +418,7 @@ public class ArrayList<T> implements List<T> {
         return new MyListIterator(index);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
         return null;
