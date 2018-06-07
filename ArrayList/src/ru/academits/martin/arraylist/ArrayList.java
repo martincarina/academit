@@ -3,14 +3,16 @@ package ru.academits.martin.arraylist;
 import java.util.*;
 
 public class ArrayList<T> implements List<T> {
+    private static final int DEFAULT_CAPACITY = 10;
 
-    @SuppressWarnings("unchecked")
-    private T[] items = (T[]) new Object[10];
+    private T[] items;
     private int length;
 
     private int modCount = 0;
 
+    @SuppressWarnings("unchecked")
     public ArrayList() {
+        items = (T[]) new Object[DEFAULT_CAPACITY];
     }
 
     @SuppressWarnings("unchecked")
@@ -33,7 +35,6 @@ public class ArrayList<T> implements List<T> {
 
     public void trimToSize() {
         if (length < items.length) {
-            modCount++;
             items = Arrays.copyOf(items, length);
         }
     }
@@ -68,7 +69,9 @@ public class ArrayList<T> implements List<T> {
         if (a.length < length) {
             return (T1[]) Arrays.copyOf(items, length, a.getClass());
         }
-        a = (T1[]) Arrays.copyOf(items, length, a.getClass());
+
+        //     a = (T1[]) Arrays.copyOf(items, length, a.getClass());//TODO если длины массива a достаточно. то надо писать именно в него, создавать новый не нужно
+        System.arraycopy((T1[]) items, 0, a, 0, length);//вернула, как было, но есть предупреждение от которого не знаю, как избавиться
         if (a.length > length) {
             a[length] = null;
         }
@@ -78,20 +81,12 @@ public class ArrayList<T> implements List<T> {
     @Override
     public boolean add(T t) {
         if (length >= items.length) {
-            increaseCapacity();
+            ensureCapacity(length + 1);
         }
         modCount++;
         items[length] = t;
         ++length;
         return true;
-    }
-
-    private void increaseCapacity() {
-        if (items.length == 0) {
-            items = Arrays.copyOf(items, 1);
-        } else {
-            items = Arrays.copyOf(items, items.length * 2);
-        }
     }
 
     @Override
@@ -100,33 +95,12 @@ public class ArrayList<T> implements List<T> {
         if (index == -1) {
             return false;
         } else {
-            modCount++;
             remove(index);
             return true;
         }
     }
 
-    private int findCollection(Collection<?> c) {
-        Objects.requireNonNull(c);
-        int start = -1;
-        for (int i = 0; i < length; i++) {
-            if (c.contains(items[i])) {
-                int preStart = i;
-                int preEnd = i;
-                ++i;
-                while (i < length && c.contains(items[i])) {
-                    preEnd = i;
-                    ++i;
-                }
-                if (preEnd - preStart + 1 == c.size()) {
-                    start = preStart;
-                }
-            }
-        }
-        return start;
-    }
-
-    private boolean findCollectionElements(Collection<?> c, boolean type) {
+    private boolean findCollectionElements(Collection<?> c, boolean type) {//TODO может, имеется ввиду итератор?(Замечание 7)
         Objects.requireNonNull(c);
         int index = -1;
         for (int i = 0; i < length; i++) {
@@ -157,62 +131,70 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return findCollection(c) > -1;
+        Objects.requireNonNull(c);
+        for (Object element : c) {
+            if (!contains(element)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public boolean addAll(Collection<? extends T> c) {
         if (c == null) {
             throw new NullPointerException("Переданная коллекция null");
         }
-        T[] array = (T[]) c.toArray();
-        modCount++;
-        int oldLength = length;
-        length += c.size();
-        ensureCapacity(length);
-        System.arraycopy(array, 0, items, oldLength, c.size());
+        if (c.size() == 0) {
+            return false;
+        }
+        for (T element : c) {
+            add(element);
+        }
         return true;
     }
 
     private void ensureCapacity(int capacity) {
         if (capacity > items.length) {
             items = Arrays.copyOf(items, capacity);
-            modCount++;
         }
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean addAll(int index, Collection<? extends T> c) {
+    public boolean addAll(int index, Collection<? extends T> c) {//TODO сделать через итератор(Замечание 7)
         if (c == null) {
             throw new NullPointerException("Переданная коллекция null");
         }
         if (index < 0 || index > length) {
             throw new IndexOutOfBoundsException("Индекс отрицательный или превышает размер списка.");
         }
-        T[] array = (T[]) c.toArray();
+        //     T[] array = (T[]) c.toArray();
         modCount++;
         int oldLength = length;
         length += c.size();
         ensureCapacity(length);
         if (index < length - 1) {
             System.arraycopy(items, index, items, index + c.size(), length - index - c.size());
-            System.arraycopy(array, 0, items, index, c.size());
+            System.arraycopy((T[]) c.toArray(), 0, items, index, c.size());
+            //          System.arraycopy(array, 0, items, index, c.size());
         } else {
-            System.arraycopy(array, 0, items, oldLength, c.size());
+            System.arraycopy((T[]) c.toArray(), 0, items, oldLength, c.size());
+            //         System.arraycopy(array, 0, items, oldLength, c.size());
         }
         return true;
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(Collection<?> c) {//TODO может, имеется ввиду итератор?(Замечание 7)
+        //TODO Замечание 8. removeAll, retainAll надо проще реализовать
         return findCollectionElements(c, false);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(Collection<?> c) {//TODO может, имеется ввиду итератор?(Замечание 7)
+        //TODO Замечание 8. removeAll, retainAll надо проще реализовать
         return findCollectionElements(c, true);
     }
 
@@ -249,14 +231,14 @@ public class ArrayList<T> implements List<T> {
             throw new IndexOutOfBoundsException("Индекс отрицательный или превышает размер списка.");
         }
         modCount++;
-        ++length;
         if (length >= items.length) {
-            increaseCapacity();
+            ensureCapacity(length + 1);
         }
-        if (index < length - 1) {
-            System.arraycopy(items, index, items, index + 1, length - index - 1);
+        if (index < length) {
+            System.arraycopy(items, index, items, index + 1, length - index);
         }
         items[index] = element;
+        ++length;
     }
 
     @Override
@@ -276,12 +258,9 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public int indexOf(Object o) {
-        if (o == null) {
-            throw new NullPointerException("Переданный аргумент null");
-        }
         int index = -1;
         for (int i = 0; i < length; i++) {
-            if (o.equals(items[i])) {
+            if (Objects.equals(o, items[i])) {
                 index = i;
                 break;
             }
@@ -291,13 +270,11 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public int lastIndexOf(Object o) {
-        if (o == null) {
-            throw new NullPointerException("Переданный аргумент null");
-        }
         int index = -1;
-        for (int i = 0; i < length; i++) {
-            if (o.equals(items[i])) {
+        for (int i = length - 1; i >= 0; i--) {
+            if (Objects.equals(o, items[i])) {
                 index = i;
+                break;
             }
         }
         return index;

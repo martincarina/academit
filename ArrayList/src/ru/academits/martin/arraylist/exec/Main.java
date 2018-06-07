@@ -50,6 +50,7 @@ public class Main {
         System.out.println("Новое значение");
         System.out.println(lines0.get(0));
         System.out.println("Добавление коллекции по индексу");
+        System.out.println(lines.addAll(lines2));
         System.out.println(lines.addAll(2, lines0));
         System.out.println("Длина списка");
         System.out.println(lines.size());
@@ -65,6 +66,7 @@ public class Main {
         System.out.println(lines.indexOf("b"));
         System.out.println("Поиск индекса последнего вхождения элемента");
         System.out.println(lines.lastIndexOf("b"));
+        System.out.println(lines.lastIndexOf(null));
 
         System.out.println("Перевод коллекции в массив");
         String[] strings = lines.toArray(new String[10]);
@@ -120,11 +122,8 @@ public class Main {
         }
 
         System.out.println("Проверка на наличие коллекции (без удаления)");
-        if (lines.containsAll(lines2)) {
-            System.out.println("true");
-        } else {
-            System.out.println("false");
-        }
+        System.out.println(lines.containsAll(lines0));
+
         System.out.println("Удаление коллекции");
         System.out.println("До удаления:");
         for (String s : lines) {
@@ -141,5 +140,13 @@ public class Main {
         for (String s : lines) {
             System.out.println(s);
         }
+//TODO убрать позже, то что ниже
+        java.util.ArrayList<String> lines10
+                = new java.util.ArrayList<>(Arrays.asList("l1", "l2", "l3", "l4"));
+        java.util.ArrayList<String> lines11
+                = new java.util.ArrayList<>(Arrays.asList("l1", "l5"));
+
+        System.out.println(lines10.containsAll(lines11));
+
     }
 }
