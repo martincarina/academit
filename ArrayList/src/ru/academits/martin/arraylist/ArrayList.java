@@ -100,9 +100,19 @@ public class ArrayList<T> implements List<T> {
         }
     }
 
-    private boolean findCollectionElements(Collection<?> c, boolean type) {//TODO может, имеется ввиду итератор?(Замечание 7)
+    private boolean findCollectionElements(Collection<?> c, boolean type) {
         Objects.requireNonNull(c);
-        int index = -1;
+        boolean isRemoved = false;
+        ListIterator<T> listIterator = this.listIterator();
+        while (listIterator.hasNext()) {//TODO понять, что за Collections.removeIf
+            T value = listIterator.next();
+            if (c.contains(value) != type) {
+                listIterator.remove();
+                isRemoved = true;
+            }
+        }
+        return isRemoved;
+/*        int index = -1;
         for (int i = 0; i < length; i++) {
             if (c.contains(items[i]) != type) {
                 index = i;
@@ -126,7 +136,7 @@ public class ArrayList<T> implements List<T> {
         }
         length = newIndex;
         modCount += length - newIndex;
-        return true;
+        return true;*/
     }
 
     @Override
@@ -162,14 +172,14 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean addAll(int index, Collection<? extends T> c) {//TODO сделать через итератор(Замечание 7)
+    public boolean addAll(int index, Collection<? extends T> c) {
         if (c == null) {
             throw new NullPointerException("Переданная коллекция null");
         }
         if (index < 0 || index > length) {
             throw new IndexOutOfBoundsException("Индекс отрицательный или превышает размер списка.");
         }
-        //     T[] array = (T[]) c.toArray();
+ /*       //     T[] array = (T[]) c.toArray();
         modCount++;
         int oldLength = length;
         length += c.size();
@@ -181,20 +191,38 @@ public class ArrayList<T> implements List<T> {
         } else {
             System.arraycopy((T[]) c.toArray(), 0, items, oldLength, c.size());
             //         System.arraycopy(array, 0, items, oldLength, c.size());
+        }*/
+        if (index == length) {
+            for (T element : c) {
+                add(element);
+            }
+        } else {
+            ListIterator<T> listIterator = this.listIterator(index);
+            for (T element : c) {
+                listIterator.add(element);
+            }
         }
         return true;
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {//TODO может, имеется ввиду итератор?(Замечание 7)
-        //TODO Замечание 8. removeAll, retainAll надо проще реализовать
+    public boolean removeAll(Collection<?> c) {
+    /*    boolean isRemoved = false;
+        ListIterator<T> listIterator = this.listIterator();
+        while (listIterator.hasNext()) {//TODO понять, что за Collections.removeIf
+            T value = listIterator.next();
+            if (c.contains(value)) {
+                listIterator.remove();
+                isRemoved = true;
+            }
+        }
+        return isRemoved;*/
         return findCollectionElements(c, false);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean retainAll(Collection<?> c) {//TODO может, имеется ввиду итератор?(Замечание 7)
-        //TODO Замечание 8. removeAll, retainAll надо проще реализовать
+    public boolean retainAll(Collection<?> c) {
         return findCollectionElements(c, true);
     }
 
@@ -356,7 +384,8 @@ public class ArrayList<T> implements List<T> {
             }
             ArrayList.this.remove(currentIndex);
             nextIndex = currentIndex;
-            currentIndex = -1;
+//            currentIndex = -1;//TODO зачем эта строка? чтоб несколько раз подряд не применять
+            currentIndex -= 1;//TODO Может так лучше? глянуть спецификацию
             currentModCount = modCount;
         }
 
@@ -377,7 +406,7 @@ public class ArrayList<T> implements List<T> {
             }
             ArrayList.this.add(nextIndex, t);
             ++nextIndex;
-            currentIndex = -1;
+            currentIndex = -1;//TODO зачем эта строка? чтоб несколько раз подряд не применять(мне не мешает)
             currentModCount = modCount;
         }
     }
