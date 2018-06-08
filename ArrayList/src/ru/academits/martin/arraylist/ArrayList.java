@@ -61,7 +61,7 @@ public class ArrayList<T> implements List<T> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "RedundantCast"})
     public <T1> T1[] toArray(T1[] a) {
         if (a == null) {
             throw new NullPointerException("Передан null");
@@ -69,9 +69,7 @@ public class ArrayList<T> implements List<T> {
         if (a.length < length) {
             return (T1[]) Arrays.copyOf(items, length, a.getClass());
         }
-
-        //     a = (T1[]) Arrays.copyOf(items, length, a.getClass());//TODO если длины массива a достаточно. то надо писать именно в него, создавать новый не нужно
-        System.arraycopy((T1[]) items, 0, a, 0, length);//вернула, как было, но есть предупреждение от которого не знаю, как избавиться
+        System.arraycopy((T1[]) items, 0, a, 0, length);
         if (a.length > length) {
             a[length] = null;
         }
@@ -102,41 +100,7 @@ public class ArrayList<T> implements List<T> {
 
     private boolean findCollectionElements(Collection<?> c, boolean type) {
         Objects.requireNonNull(c);
-        boolean isRemoved = false;
-        ListIterator<T> listIterator = this.listIterator();
-        while (listIterator.hasNext()) {//TODO понять, что за Collections.removeIf
-            T value = listIterator.next();
-            if (c.contains(value) != type) {
-                listIterator.remove();
-                isRemoved = true;
-            }
-        }
-        return isRemoved;
-/*        int index = -1;
-        for (int i = 0; i < length; i++) {
-            if (c.contains(items[i]) != type) {
-                index = i;
-                break;
-            }
-        }
-
-        if (index < 0) {
-            return false;
-        }
-        int newIndex = index;
-        ++index;
-        for (int i = index; i < length; i++) {
-            if (c.contains(items[i]) == type) {
-                items[newIndex] = items[i];
-                ++newIndex;
-            }
-        }
-        for (int i = newIndex; i < length; i++) {
-            items[i] = null;
-        }
-        length = newIndex;
-        modCount += length - newIndex;
-        return true;*/
+        return this.removeIf((T value) -> c.contains(value) != type);
     }
 
     @Override
@@ -179,19 +143,6 @@ public class ArrayList<T> implements List<T> {
         if (index < 0 || index > length) {
             throw new IndexOutOfBoundsException("Индекс отрицательный или превышает размер списка.");
         }
- /*       //     T[] array = (T[]) c.toArray();
-        modCount++;
-        int oldLength = length;
-        length += c.size();
-        ensureCapacity(length);
-        if (index < length - 1) {
-            System.arraycopy(items, index, items, index + c.size(), length - index - c.size());
-            System.arraycopy((T[]) c.toArray(), 0, items, index, c.size());
-            //          System.arraycopy(array, 0, items, index, c.size());
-        } else {
-            System.arraycopy((T[]) c.toArray(), 0, items, oldLength, c.size());
-            //         System.arraycopy(array, 0, items, oldLength, c.size());
-        }*/
         if (index == length) {
             for (T element : c) {
                 add(element);
@@ -207,16 +158,6 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public boolean removeAll(Collection<?> c) {
-    /*    boolean isRemoved = false;
-        ListIterator<T> listIterator = this.listIterator();
-        while (listIterator.hasNext()) {//TODO понять, что за Collections.removeIf
-            T value = listIterator.next();
-            if (c.contains(value)) {
-                listIterator.remove();
-                isRemoved = true;
-            }
-        }
-        return isRemoved;*/
         return findCollectionElements(c, false);
     }
 
@@ -329,6 +270,19 @@ public class ArrayList<T> implements List<T> {
             currentIndex = index;
             return items[index];
         }
+
+        @Override
+        public void remove() {
+            if (currentIndex < 0)
+                throw new IllegalStateException();
+            if (modCount != currentModCount) {
+                throw new ConcurrentModificationException();
+            }
+            ArrayList.this.remove(currentIndex);
+            nextIndex = currentIndex;
+            currentIndex = -1;
+            currentModCount = modCount;
+        }
     }
 
     @Override
@@ -376,20 +330,6 @@ public class ArrayList<T> implements List<T> {
         }
 
         @Override
-        public void remove() {
-            if (currentIndex < 0)
-                throw new IllegalStateException();
-            if (modCount != currentModCount) {
-                throw new ConcurrentModificationException();
-            }
-            ArrayList.this.remove(currentIndex);
-            nextIndex = currentIndex;
-//            currentIndex = -1;//TODO зачем эта строка? чтоб несколько раз подряд не применять
-            currentIndex -= 1;//TODO Может так лучше? глянуть спецификацию
-            currentModCount = modCount;
-        }
-
-        @Override
         public void set(T t) {
             if (currentIndex < 0)
                 throw new IllegalStateException();
@@ -406,7 +346,7 @@ public class ArrayList<T> implements List<T> {
             }
             ArrayList.this.add(nextIndex, t);
             ++nextIndex;
-            currentIndex = -1;//TODO зачем эта строка? чтоб несколько раз подряд не применять(мне не мешает)
+            currentIndex = -1;
             currentModCount = modCount;
         }
     }
