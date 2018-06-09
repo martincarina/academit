@@ -49,9 +49,22 @@ public class Main {
         lines0.add(0, "b");
         System.out.println("Новое значение");
         System.out.println(lines0.get(0));
-        System.out.println("Добавление коллекции по индексу");
+        System.out.println("Добавление коллекции ");
+        System.out.println("До: ");
+        for (String s : lines) {
+            System.out.println(s);
+        }
         System.out.println(lines.addAll(lines2));
+        System.out.println("После: ");
+        for (String s : lines) {
+            System.out.println(s);
+        }
+        System.out.println("Добавление коллекции по индексу");
         System.out.println(lines.addAll(2, lines0));
+        System.out.println("После: ");
+        for (String s : lines) {
+            System.out.println(s);
+        }
         System.out.println("Длина списка");
         System.out.println(lines.size());
         System.out.println(lines.add(null));

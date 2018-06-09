@@ -79,7 +79,7 @@ public class ArrayList<T> implements List<T> {
     @Override
     public boolean add(T t) {
         if (length >= items.length) {
-            ensureCapacity(length + 1);
+            ensureCapacity(length * 2 + 1);
         }
         modCount++;
         items[length] = t;
@@ -116,16 +116,7 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        if (c == null) {
-            throw new NullPointerException("Переданная коллекция null");
-        }
-        if (c.size() == 0) {
-            return false;
-        }
-        for (T element : c) {
-            add(element);
-        }
-        return true;
+        return addAll(length, c);
     }
 
     private void ensureCapacity(int capacity) {
@@ -143,15 +134,22 @@ public class ArrayList<T> implements List<T> {
         if (index < 0 || index > length) {
             throw new IndexOutOfBoundsException("Индекс отрицательный или превышает размер списка.");
         }
-        if (index == length) {
-            for (T element : c) {
-                add(element);
-            }
-        } else {
-            ListIterator<T> listIterator = this.listIterator(index);
-            for (T element : c) {
-                listIterator.add(element);
-            }
+        if (c.size() == 0) {
+            return false;
+        }
+        modCount++;
+        length += c.size();
+        if (length >= items.length) {
+            ensureCapacity(length * 2);
+        }
+        if (index < length - 1) {
+            System.arraycopy(items, index, items, index + c.size(), length - index - c.size());
+        }
+
+        ListIterator<T> listIterator = this.listIterator(index);
+        for (T element : c) {
+            listIterator.next();
+            listIterator.set(element);
         }
         return true;
     }
@@ -201,7 +199,7 @@ public class ArrayList<T> implements List<T> {
         }
         modCount++;
         if (length >= items.length) {
-            ensureCapacity(length + 1);
+            ensureCapacity(length * 2 + 1);
         }
         if (index < length) {
             System.arraycopy(items, index, items, index + 1, length - index);
@@ -255,7 +253,7 @@ public class ArrayList<T> implements List<T> {
         int currentModCount = modCount;
 
         public boolean hasNext() {
-            return currentIndex + 1 < length;
+            return nextIndex < length;
         }
 
         public T next() {
