@@ -138,19 +138,21 @@ public class ArrayList<T> implements List<T> {
             return false;
         }
         modCount++;
-        length += c.size();
-        if (length >= items.length) {
-            ensureCapacity(length * 2);
-        }
-        if (index < length - 1) {
-            System.arraycopy(items, index, items, index + c.size(), length - index - c.size());
+        int newLength = length + c.size();
+        if (newLength >= items.length) {
+            ensureCapacity(newLength * 2);
         }
 
-        ListIterator<T> listIterator = this.listIterator(index);
-        for (T element : c) {
-            listIterator.next();
-            listIterator.set(element);
+        if (index < length) {
+            System.arraycopy(items, index, items, index + c.size(), length - index);
         }
+
+        int indexNew = index;
+        for (T element : c) {
+            this.set(indexNew, element);
+            ++indexNew;
+        }
+        length = newLength;
         return true;
     }
 

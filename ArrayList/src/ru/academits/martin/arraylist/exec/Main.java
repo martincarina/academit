@@ -49,7 +49,7 @@ public class Main {
         lines0.add(0, "b");
         System.out.println("Новое значение");
         System.out.println(lines0.get(0));
-        System.out.println("Добавление коллекции ");
+        System.out.println("Добавление коллекции в конец. ");
         System.out.println("До: ");
         for (String s : lines) {
             System.out.println(s);
@@ -144,7 +144,9 @@ public class Main {
         for (String s : lines) {
             System.out.println(s);
         }
-        lines.removeAll(lines2);
+
+        lines2.add(null);
+        System.out.println(lines.removeAll(lines2));
         System.out.println("После удаления:");
         for (String s : lines) {
             System.out.println(s);
