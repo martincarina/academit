@@ -1,9 +1,6 @@
 package ru.academits.martin.hashtable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 
 public class HashTable<T> implements Collection<T> {
     //   private Item<T>[] table;
@@ -51,17 +48,31 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public boolean contains(Object o) {
-        return false;
+        if (o == null) {
+            throw new NullPointerException("В аргумент передан null");
+        }
+        int index = Math.abs(o.hashCode() % size);
+        return items.get(index) != null;
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator iterator() {//TODO какой тут итератор нужен? Только по массиву? Или должен внутри списков тоже итерировать?
         return null;
     }
 
     @Override
-    public Object[] toArray() {
-        return new Object[0];
+    public Object[] toArray() {//TODO тут двумерный массив должен выдаваться в случае с одинаковым хэшем для разных объектов?
+        //TODO или одномерные просто со значениями первого элемента в списках-элементах? Почитать спецификацию! И проверить есть этот метод
+        //TODO в родных хэш-таблицах
+        T[] array = (T[]) new Object[size];
+        for (int i = 0; i < size; i++) {
+            if (items.get(i) == null) {
+                array[i] = null;
+            } else {
+                array[i] = items.get(i).getFirst();
+            }
+        }
+        return array;
     }
 
     @Override
@@ -95,7 +106,12 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public void clear() {
-
+        for (int i = 0; i < size; i++) {
+            if (items.get(i) != null) {
+                items.set(i, null);
+            }
+        }
+        count = 0;
     }
 
     @Override
