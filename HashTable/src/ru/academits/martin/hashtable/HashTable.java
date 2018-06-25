@@ -5,8 +5,49 @@ import java.util.*;
 public class HashTable<T> implements Collection<T> {
     //   private Item<T>[] table;
     //   LinkedList<T>[] items;
-    private ArrayList<LinkedList<T>> items;//пока так, может, потом обычный массив попробую сделать
-    private int count;//количество в таблице
+    //  private ArrayList<LinkedList<T>> items;//пока так, может, потом обычный массив попробую сделать
+    private static class ListItem<T> {
+        private T data;
+        private ListItem<T> next;
+        private ListItem<T> prev;
+
+        ListItem(T data) {
+            this.data = data;
+        }
+
+        ListItem(T data, ListItem<T> next) {
+            this.data = data;
+            this.next = next;
+
+        }
+
+        public T getData() {
+            return data;
+        }
+
+        public void setData(T data) {
+            this.data = data;
+        }
+
+        public ListItem<T> getNext() {
+            return next;
+        }
+
+        public void setNext(ListItem<T> next) {
+            this.next = next;
+        }
+
+        public ListItem<T> getPrev() {
+            return next;
+        }
+
+        public void setPrev(ListItem<T> next) {
+            this.next = next;
+        }
+    }
+
+    private ArrayList<ListItem<T>> items;
+    private int count;//количество элементов в таблице. Если count>0.75 size. Обычно таблицу расширяют. TODO добавить проверку и расширение
     private int size;//размер таблицы
 
     public HashTable(int size) {
@@ -33,7 +74,7 @@ public class HashTable<T> implements Collection<T> {
         return count == 0;
     }
 
-    public void print() {
+    public void print() {//TODO переделать, а лучше вообще убрать, т.к. методы не должны печатать
      /*   for (int i = 0; i < size; i++) {
             if (items[i] != null) {
                 System.out.println(i + "" + items[i].getFirst());
@@ -41,7 +82,7 @@ public class HashTable<T> implements Collection<T> {
         }*/
         for (int i = 0; i < size; i++) {
             if (items.get(i) != null) {
-                System.out.println(i + " " + items.get(i).getFirst());
+                System.out.println(i + " " + items.get(i).getData());
             }
         }
     }
@@ -52,43 +93,72 @@ public class HashTable<T> implements Collection<T> {
             throw new NullPointerException("В аргумент передан null");
         }
         int index = Math.abs(o.hashCode() % size);
-        return items.get(index) != null;
+        return items.get(index) != null;//TODO может, надо еще equals применить, а то вдруг просто hashCode совпал
     }
 
-    @Override
-    public Iterator iterator() {//TODO какой тут итератор нужен? Только по массиву? Или должен внутри списков тоже итерировать?
-        return null;
-    }
+    private class MyIterator implements Iterator<T> {// TODO возможно, нужен modCount
+        int currentElementNumber = 0;//номер текущего элемента таблицы
+        int currentArrayIndex = 0;//индекс текущего элемента таблицы
+        ListItem<T> currentElement;
 
-    @Override
-    public Object[] toArray() {//TODO тут двумерный массив должен выдаваться в случае с одинаковым хэшем для разных объектов?
-        //TODO или одномерные просто со значениями первого элемента в списках-элементах? Почитать спецификацию! И проверить есть этот метод
-        //TODO в родных хэш-таблицах
-        T[] array = (T[]) new Object[size];
-        for (int i = 0; i < size; i++) {
-            if (items.get(i) == null) {
-                array[i] = null;
-            } else {
-                array[i] = items.get(i).getFirst();
+        @Override
+        public boolean hasNext() {
+            return currentElementNumber < count;
+        }
+
+        @Override
+        public T next() {
+            for (; currentElementNumber != count; currentArrayIndex++) {
+                if (items.get(currentArrayIndex) != null) {
+                    if (currentElement == null) {
+                        currentElement = items.get(currentArrayIndex);
+                    }
+
+                    currentElementNumber++;
+                    T value = currentElement.getData();
+                    currentElement = currentElement.getNext();
+                    if (currentElement == null) {
+                        currentArrayIndex++;
+                    }
+                    return value;
+                }
             }
+            return null;
+        }
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new MyIterator();
+    }
+
+    @Override
+    public Object[] toArray() {//TODO Должен быть массив со всеми значениями коллекции
+        T[] array = (T[]) new Object[count];
+        Iterator<T> listIterator = this.iterator();
+ /*
+  int i = 0;
+  while (listIterator.hasNext()) {
+            array[i] = listIterator.next();
+            i++;
+        }*/
+
+        for (int j = 0; j < array.length; j++) {
+            //           if (listIterator.hasNext()) { - надо ли? массив ведь длиной с количество элементов таблицы
+            array[j] = listIterator.next();
+            //          }
         }
         return array;
     }
 
     @Override
     public boolean add(Object o) {
+        ListItem<T> node = new ListItem<>((T) o);
         int index = Math.abs(o.hashCode() % size);
-    /*    if (items[index] == null) {
-            //      items[index] = new LinkedList<>();
-            items[index].add((T) o);
-        }*/
         if (items.get(index) != null) {
-            items.get(index).add((T) o);
-            ++count;
-            return true;
+            node.next = items.get(index);
+            node.next.prev = node;
         }
-        LinkedList<T> node = new LinkedList<>();
-        node.add((T) o);
         items.set(index, node);
         ++count;
         return true;
@@ -96,12 +166,44 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public boolean remove(Object o) {
-        return false;
+        if (o == null) {
+            throw new NullPointerException("В аргумент передан null");
+        }
+        int index = Math.abs(o.hashCode() % size);
+        if (items.get(index) == null) {
+            return false;
+        }
+        ListItem<T> node = items.get(index);
+        while (node != null) {
+            if (o.equals(node.getData())) {
+                if (node.prev != null) {
+                    node.prev.next = node.next;
+                } else {
+                    items.set(index, node.next);
+                }
+                if (node.next != null) {
+                    node.next.prev = node.prev;
+                }
+                break;
+            }
+            node = node.next;
+        }
+        --count;
+        return true;
     }
 
     @Override
     public boolean addAll(Collection c) {
-        return false;
+        if (c == null) {
+            throw new NullPointerException("Переданная коллекция null");
+        }
+        if (c.size() == 0) {
+            return false;
+        }
+        for (Object element : c) {
+            this.add(element);
+        }
+        return true;
     }
 
     @Override
@@ -126,7 +228,12 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public boolean containsAll(Collection c) {
-        return false;
+        for (Object element : c) {
+            if (!contains(element)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
