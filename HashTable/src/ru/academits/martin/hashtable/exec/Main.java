@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        HashTable<String> hashTable = new HashTable<>(10);
+        HashTable<String> hashTable = new HashTable<>(1);
         System.out.println(hashTable.size());
         hashTable.add("dog");
         hashTable.add("cat");
@@ -25,6 +25,7 @@ public class Main {
         }
         System.out.println("Удаление элемента из таблицы");
         System.out.println(hashTable.remove("dog"));
+//        hashTable.add(null);
         System.out.println("Таблица после удаления элемента");
         for (String s : hashTable) {
             System.out.println(s);
@@ -36,5 +37,7 @@ public class Main {
         for (String s : hashTable) {
             System.out.println(s);
         }
+        ArrayList<String> lines0 = new ArrayList<>(Arrays.asList("cat", "dog", null));
+        System.out.println(hashTable.containsAll(lines0));
     }
 }

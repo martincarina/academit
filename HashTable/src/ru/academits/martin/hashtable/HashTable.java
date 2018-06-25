@@ -93,7 +93,20 @@ public class HashTable<T> implements Collection<T> {
             throw new NullPointerException("В аргумент передан null");
         }
         int index = Math.abs(o.hashCode() % size);
-        return items.get(index) != null;//TODO может, надо еще equals применить, а то вдруг просто hashCode совпал
+        if (items.get(index) != null) {
+/*            if (items.get(index).getData().equals(o)) {
+                return true;
+            } else {*/
+            MyIterator listIterator = new MyIterator();
+            while (listIterator.hasNext()) {
+                if (listIterator.next().equals(o)) {
+                    return true;
+                }
+            }
+//            }
+        }
+        return false;
+//        return items.get(index) != null;//TODO может, надо еще equals применить, а то вдруг просто hashCode совпал
     }
 
     private class MyIterator implements Iterator<T> {// TODO возможно, нужен modCount
@@ -153,6 +166,9 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public boolean add(Object o) {
+        if(o==null){
+            throw new NullPointerException("В аргумент передан null");//от null hashcode не считается.
+        }
         ListItem<T> node = new ListItem<>((T) o);
         int index = Math.abs(o.hashCode() % size);
         if (items.get(index) != null) {
@@ -228,6 +244,9 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public boolean containsAll(Collection c) {
+        if (c == null) {
+            throw new NullPointerException("Переданная коллекция null");
+        }
         for (Object element : c) {
             if (!contains(element)) {
                 return false;
@@ -238,6 +257,9 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public Object[] toArray(Object[] a) {
+        if (a == null) {
+            throw new NullPointerException("Передан null");
+        }
         return new Object[0];
     }
 }
