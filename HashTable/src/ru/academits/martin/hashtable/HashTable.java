@@ -16,38 +16,51 @@ public class HashTable<T> implements Collection<T> {
             return data;
         }
 
- /*       public void setData(T data) {
-            this.data = data;
-        }*/
-
         public ListItem<T> getNext() {
             return next;
         }
-
- /*       public void setNext(ListItem<T> next) {
-            this.next = next;
-        }
-
-        public ListItem<T> getPrev() {
-            return next;
-        }
-
-        public void setPrev(ListItem<T> next) {
-            this.next = next;
-        }*/
     }
 
-    private ArrayList<ListItem<T>> items;//пока так, может, потом обычный массив попробую сделать
-    private int count;//количество элементов в таблице. Если count>0.75 size. Обычно таблицу расширяют. TODO добавить проверку и расширение
+    private ListItem<T>[] items;
+    private int count;
     private int size;
+    private final float DEFAULT_LOAD_FACTOR = 0.75f;
+    private float threshold = size * DEFAULT_LOAD_FACTOR;
 
+    private int modCount = 0;
+
+    @SuppressWarnings("unchecked")
     public HashTable(int size) {
-        this.size = size;
-        items = new ArrayList<>();
-        items.ensureCapacity(size);
-        for (int i = 0; i < size; i++) {
-            items.add(null);
+        if (size <= 0) {
+            throw new IllegalArgumentException("Размерность вектора должна быть не меньше 1.");
         }
+        this.size = size;
+        items = new ListItem[size];
+    }
+
+    private static int hash(Object data) {
+        return (data == null) ? 0 : data.hashCode();
+    }
+
+    private int findIndex(Object o) {
+        return Math.abs(hash(o) % size);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void resize() {
+        int newCapacity = size * 2;
+        ListItem<T>[] newItems = new ListItem[newCapacity];
+        size = newCapacity;
+        for (T element : this) {
+            ListItem<T> node = new ListItem<>(element);
+            int newIndex = findIndex(element);
+            if (newItems[newIndex] != null) {
+                node.next = newItems[newIndex];
+                node.next.prev = node;
+            }
+            newItems[newIndex] = node;
+        }
+        items = newItems;
     }
 
     @Override
@@ -62,15 +75,10 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public boolean contains(Object o) {
-        if (o == null) {
-            throw new NullPointerException("В аргумент передан null");
-        }
-        int index = Math.abs(o.hashCode() % size);
-        if (items.get(index) != null) {
-            Iterator listIterator = new MyIterator();
-            //          Iterator<T> listIterator = this.iterator();//можно foreach попробовать
-            while (listIterator.hasNext()) {
-                if (listIterator.next().equals(o)) {
+        int index = findIndex(o);
+        if (items[index] != null) {
+            for (T element : this) {
+                if (Objects.equals(element, o)) {
                     return true;
                 }
             }
@@ -78,11 +86,14 @@ public class HashTable<T> implements Collection<T> {
         return false;
     }
 
-    private class MyIterator implements Iterator<T> {// TODO наверное, нужен modCount
+    private class MyIterator implements Iterator<T> {
         int currentElementNumber = 0;
         int currentArrayIndex = 0;
         ListItem<T> currentElement;
-        ListItem<T> nextElement;
+        ListItem<T> prevElement;
+        int prevArrayIndex = 0;
+
+        int currentModCount = modCount;
 
         @Override
         public boolean hasNext() {
@@ -91,17 +102,23 @@ public class HashTable<T> implements Collection<T> {
 
         @Override
         public T next() {
+            if (currentElementNumber >= count) {
+                throw new NoSuchElementException("Коллекция закончилась");
+            }
+            if (modCount != currentModCount) {
+                throw new ConcurrentModificationException();
+            }
             for (; currentElementNumber != count; currentArrayIndex++) {
-                if (items.get(currentArrayIndex) != null) {
-                    currentElement = nextElement;
+                if (items[currentArrayIndex] != null) {
                     if (currentElement == null) {
-                        currentElement = items.get(currentArrayIndex);
+                        currentElement = items[currentArrayIndex];
                     }
-
                     currentElementNumber++;
                     T value = currentElement.getData();
-                    nextElement = currentElement.getNext();
-                    if (nextElement == null) {
+                    prevElement = currentElement;
+                    currentElement = currentElement.getNext();
+                    prevArrayIndex = currentArrayIndex;
+                    if (currentElement == null) {
                         currentArrayIndex++;
                     }
                     return value;
@@ -115,22 +132,23 @@ public class HashTable<T> implements Collection<T> {
             if (currentElementNumber < 0) {
                 throw new IllegalStateException();
             }
-     /*       if (modCount != currentModCount) {
+            if (modCount != currentModCount) {
                 throw new ConcurrentModificationException();
-            }*/
-
-            if (currentElement.prev != null) {
-                currentElement.prev.next = currentElement.next;
-            } else {
-                items.set(currentArrayIndex, currentElement.next);
             }
-            if (currentElement.next != null) {
-                currentElement.next.prev = currentElement.prev;
+
+            if (prevElement.prev != null) {
+                prevElement.prev.next = prevElement.next;
+            } else {
+                items[prevArrayIndex] = prevElement.next;
+            }
+            if (prevElement.next != null) {
+                prevElement.next.prev = prevElement.prev;
             }
             --count;
             --currentElementNumber;
-            currentElement = null;
-            //           currentModCount = modCount;
+            prevElement = null;
+            modCount++;
+            currentModCount = modCount;
         }
     }
 
@@ -139,56 +157,55 @@ public class HashTable<T> implements Collection<T> {
         return new MyIterator();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object[] toArray() {
         T[] array = (T[]) new Object[count];
         Iterator<T> listIterator = this.iterator();
 
         for (int j = 0; j < array.length; j++) {
-            //           if (listIterator.hasNext()) { - надо ли? массив ведь длиной с количество элементов таблицы
             array[j] = listIterator.next();
-            //          }
         }
         return array;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean add(Object o) {
-        if (o == null) {
-            throw new NullPointerException("В аргумент передан null");
+        if (count + 1 >= threshold) {
+            this.resize();
         }
         ListItem<T> node = new ListItem<>((T) o);
-        int index = Math.abs(o.hashCode() % size);
-        if (items.get(index) != null) {
-            node.next = items.get(index);
+        int index = findIndex(o);
+        if (items[index] != null) {
+            node.next = items[index];
             node.next.prev = node;
         }
-        items.set(index, node);
+        items[index] = node;
         ++count;
+        ++modCount;
         return true;
     }
 
     @Override
     public boolean remove(Object o) {
-        if (o == null) {
+        int index = findIndex(o);
+        if (items[index] == null) {
             return false;
         }
-        int index = Math.abs(o.hashCode() % size);
-        if (items.get(index) == null) {
-            return false;
-        }
-        ListItem<T> node = items.get(index);
+        ListItem<T> node = items[index];
         while (node != null) {
-            if (o.equals(node.getData())) {
+            if (Objects.equals(o, node.getData())) {
                 if (node.prev != null) {
                     node.prev.next = node.next;
                 } else {
-                    items.set(index, node.next);
+                    items[index] = node.next;
                 }
                 if (node.next != null) {
                     node.next.prev = node.prev;
                 }
                 --count;
+                ++modCount;
                 return true;
             }
             node = node.next;
@@ -207,14 +224,15 @@ public class HashTable<T> implements Collection<T> {
         for (Object element : c) {
             this.add(element);
         }
+        modCount++;
         return true;
     }
 
     @Override
     public void clear() {
         for (int i = 0; i < size; i++) {
-            if (items.get(i) != null) {
-                items.set(i, null);
+            if (items[i] != null) {
+                items[i] = null;
             }
         }
         count = 0;
@@ -248,6 +266,7 @@ public class HashTable<T> implements Collection<T> {
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T1> T1[] toArray(T1[] a) {
         if (a == null) {
