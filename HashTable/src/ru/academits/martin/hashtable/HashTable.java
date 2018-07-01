@@ -12,11 +12,11 @@ public class HashTable<T> implements Collection<T> {
             this.data = data;
         }
 
-        public T getData() {
+        private T getData() {
             return data;
         }
 
-        public ListItem<T> getNext() {
+        private ListItem<T> getNext() {
             return next;
         }
     }
