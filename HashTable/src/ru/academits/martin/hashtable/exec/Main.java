@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        HashTable<String> hashTable = new HashTable<>(1);
+        HashTable<String> hashTable = new HashTable<>(10);
         System.out.println("Размер таблицы");
         System.out.println(hashTable.size());
         System.out.println("Добавление элементов");
@@ -52,13 +52,13 @@ public class Main {
 
         ArrayList<String> lines1 = new ArrayList<>(Arrays.asList("a", "b"));
         System.out.println("Удаление коллекции");
-        System.out.println(hashTable.removeAll(lines0));
+        System.out.println(hashTable.removeAll(lines1));
         System.out.println("После удаления:");
         for (String s : hashTable) {
             System.out.println(s);
         }
         System.out.println("Оставить элементы коллекции");
-        hashTable.retainAll(lines1);
+        hashTable.retainAll(lines0);
         System.out.println("После применения метода retainAll:");
         for (String s : hashTable) {
             System.out.println(s);
