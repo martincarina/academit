@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Main {
+public class Main1 {
     public static void main(String[] args) {
         Person person1 = new Person("Олег", 30);
         Person person2 = new Person("Игорь", 45);
