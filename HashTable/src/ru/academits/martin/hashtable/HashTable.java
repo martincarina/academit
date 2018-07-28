@@ -38,12 +38,9 @@ public class HashTable<T> implements Collection<T> {
         items = new ListItem[size];
     }
 
-    private static int hash(Object data) {
-        return (data == null) ? 0 : data.hashCode();
-    }
-
     private int findIndex(Object o) {
-        return Math.abs(hash(o) % size);
+        int hash = (o == null) ? 0 : o.hashCode();
+        return Math.abs(hash % size);
     }
 
     @SuppressWarnings("unchecked")
@@ -161,6 +158,11 @@ public class HashTable<T> implements Collection<T> {
     @Override
     public Object[] toArray() {
         T[] array = (T[]) new Object[count];
+
+       /* for (T element : this) {
+            array[] = element;
+        }*/
+
         Iterator<T> listIterator = this.iterator();
 
         for (int j = 0; j < array.length; j++) {
@@ -231,9 +233,7 @@ public class HashTable<T> implements Collection<T> {
     @Override
     public void clear() {
         for (int i = 0; i < size; i++) {
-            if (items[i] != null) {
-                items[i] = null;
-            }
+            items[i] = null;
         }
         count = 0;
     }
