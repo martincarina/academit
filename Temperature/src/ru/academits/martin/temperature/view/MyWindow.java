@@ -60,6 +60,8 @@ public class MyWindow {
         finalCombo.setSelectedIndex(1);
 
         JTextField finalTemperatureField = new JTextField(20);
+        finalTemperatureField.setEditable(false);
+        finalTemperatureField.setText("30");
 
         finalTemperatureBox.add(temperatureScaleLabel1);
         finalTemperatureBox.add(Box.createVerticalStrut(10));
