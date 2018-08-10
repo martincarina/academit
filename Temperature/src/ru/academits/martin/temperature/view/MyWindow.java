@@ -19,26 +19,20 @@ public class MyWindow {
                 convertButton.setText("Конвертировать");
             }
         });
-//        convertButton.setPreferredSize(new Dimension(120,30));
+
         panel.add(convertButton);
         frame.add(panel, BorderLayout.PAGE_END);
 
         Box initTemperatureBox = Box.createVerticalBox();
         initTemperatureBox.setPreferredSize(new Dimension(frame.getWidth() / 2, frame.getHeight()));
 
-//        JPanel initTemperaturePanel = new JPanel(new BorderLayout());
-
         JLabel temperatureScaleLabel = new JLabel("Выберете шкалу:", SwingConstants.RIGHT);//не работает SwingConstants.RIGHT
         JLabel initTemperatureLabel = new JLabel("Введите температуру:", SwingConstants.LEFT);
         JTextField initTemperatureField = new JTextField(20);
-        //  initTemperatureField.setPreferredSize(new Dimension(0, 0));
-        //
+
         String[] elements = new String[]{"Кельвин", "Цельсий", "Фаренгейт"};
         JComboBox initCombo = new JComboBox(elements);
         initCombo.setSelectedIndex(1);
-
-        //        initTemperaturePanel.add(initTemperatureLabel, BorderLayout.PAGE_START);
-//        initTemperaturePanel.add(initTemperatureField, BorderLayout.PAGE_END);
 
         //String text = textField.getText();
         //int number = Integer.parse(text);
@@ -48,14 +42,12 @@ public class MyWindow {
 
         initTemperatureBox.add(initCombo);
 
-        //       initTemperatureBox.add(scalePanel);
         initTemperatureBox.add(Box.createVerticalStrut(10));
         initTemperatureBox.add(initTemperatureLabel);
         initTemperatureBox.add(Box.createVerticalGlue());
         initTemperatureBox.add(initTemperatureField);
         initTemperatureBox.add(Box.createVerticalStrut(100));
 
-//        frame.add(initTemperaturePanel, BorderLayout.LINE_START);
         frame.add(initTemperatureBox, BorderLayout.LINE_START);
 
         Box finalTemperatureBox = Box.createVerticalBox();
