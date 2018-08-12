@@ -7,8 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MyView extends JFrame implements IView {
-    //    private JTextField textFieldFarenheit = new JTextField(20);
-//    private JTextField textFieldCelsius = new JTextField(20);
     private JTextField textFieldInput = new JTextField(20);
     private JTextField textFieldOutput = new JTextField(20);
     private String[] elements = new String[]{"Фаренгейт", "Цельсий", "Кельвин"};
@@ -47,17 +45,39 @@ public class MyView extends JFrame implements IView {
     }
 
     @Override
-    public double getInputDegree() {
-        return Double.parseDouble(textFieldInput.getText());
+    public double getInputDegree() throws NumberFormatException{
+        //TODO возможно, проверку надо вынести в контроллер(тогда там же строку в число преобразовыать и добавить showDialog в интерфейс
+//        return Double.parseDouble(textFieldInput.getText());
+        try {
+            return Double.parseDouble(textFieldInput.getText());
+        } catch (NumberFormatException e) {
+            showDialog();
+            throw new NumberFormatException("Неверный формат данных");
+        }
     }
 
     @Override
     public int getInputChoice() {
-        return 0;
+        return initCombo.getSelectedIndex();
     }
 
     @Override
     public int getOutputChoice() {
-        return 0;
+        return finalCombo.getSelectedIndex();
     }
+
+  /*  private static boolean isNumber(String s) throws NumberFormatException {
+        try {
+            Double.parseDouble(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }*/
+  private void showDialog(){
+      JOptionPane.showMessageDialog(this,"Неверный формат данных. Ввведите число.", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
+      textFieldInput.setText(null);
+      textFieldOutput.setText(null);
+  }
+
 }
