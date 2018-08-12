@@ -5,6 +5,8 @@ import ru.academits.martin.temperature.controller.IView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.DecimalFormat;
+import java.util.Locale;
 
 public class MyView extends JFrame implements IView {
     private JTextField textFieldInput = new JTextField(20);
@@ -22,38 +24,36 @@ public class MyView extends JFrame implements IView {
         JButton button = new JButton("Конвертировать");
         button.addActionListener(controller);
         initCombo.setSelectedIndex(0);
+        JLabel scaleInput = new JLabel("Шкала ввода:");
+        JLabel scaleOutput = new JLabel("Шкала результата:");
         JLabel labelInput = new JLabel("Поле ввода:");
         JLabel labelOutput = new JLabel("Результат:");
-        add(initCombo);
-        add(labelInput);
-        add(textFieldInput);
-        add(finalCombo);
-        add(labelOutput);
-        add(textFieldOutput);
+        Box initTemperatureBox = Box.createVerticalBox();
+        initTemperatureBox.add(scaleInput);
+        initTemperatureBox.add(initCombo);
+        initTemperatureBox.add(labelInput);
+        initTemperatureBox.add(textFieldInput);
+        add(initTemperatureBox);
+        Box finalTemperatureBox = Box.createVerticalBox();
+        finalTemperatureBox.add(scaleOutput);
+        finalTemperatureBox.add(finalCombo);
+        finalTemperatureBox.add(labelOutput);
+        finalTemperatureBox.add(textFieldOutput);
         textFieldOutput.setEditable(false);
+        add(finalTemperatureBox);
         add(button);
     }
 
     @Override
-    public void setInputDegree(double value) {
-        textFieldInput.setText(Double.toString(value));
-    }
-
-    @Override
     public void setOutputDegree(double value) {
-        textFieldOutput.setText(Double.toString(value));
+        Locale.setDefault(new Locale("en", "US"));
+        String formattedDouble = new DecimalFormat("#0.##").format(value);
+        textFieldOutput.setText(formattedDouble);
     }
 
     @Override
-    public double getInputDegree() throws NumberFormatException{
-        //TODO возможно, проверку надо вынести в контроллер(тогда там же строку в число преобразовыать и добавить showDialog в интерфейс
-//        return Double.parseDouble(textFieldInput.getText());
-        try {
-            return Double.parseDouble(textFieldInput.getText());
-        } catch (NumberFormatException e) {
-            showDialog();
-            throw new NumberFormatException("Неверный формат данных");
-        }
+    public String getInputText() {
+        return textFieldInput.getText();
     }
 
     @Override
@@ -66,18 +66,17 @@ public class MyView extends JFrame implements IView {
         return finalCombo.getSelectedIndex();
     }
 
-  /*  private static boolean isNumber(String s) throws NumberFormatException {
-        try {
-            Double.parseDouble(s);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }*/
-  private void showDialog(){
-      JOptionPane.showMessageDialog(this,"Неверный формат данных. Ввведите число.", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
-      textFieldInput.setText(null);
-      textFieldOutput.setText(null);
-  }
+    @Override
+    public void showTemperatureErrorMessage() {
+        JOptionPane.showMessageDialog(this, "Не существует температуры ниже 0 K. Введите другое значение.", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
+        textFieldInput.setText(null);
+        textFieldOutput.setText(null);
+    }
 
+    @Override
+    public void showInputErrorMessage() {
+        JOptionPane.showMessageDialog(this, "Неверный формат данных. Введите число.", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
+        textFieldInput.setText(null);
+        textFieldOutput.setText(null);
+    }
 }

@@ -12,6 +12,7 @@ public class Main {
             frame1.pack();
             frame1.setLocationRelativeTo(null);
             frame1.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            frame1.setResizable(false);
             frame1.setVisible(true);
         });
     }

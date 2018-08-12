@@ -2,9 +2,9 @@ package ru.academits.martin.temperature.model;
 
 public class Model {
 
-    private final double ZERO_FAHRENHEIT = 32;
-    private final double ZERO_CELSIUS = 0;
-    private final double ZERO_KELVIN = 273.15;
+    private static final double ZERO_FAHRENHEIT = 32;
+    private static final double ZERO_CELSIUS = 0;
+    private static final double ZERO_KELVIN = 273.15;
 
     private double valueFahrenheit = ZERO_FAHRENHEIT;
     private double valueCelsius = ZERO_CELSIUS;
