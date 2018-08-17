@@ -9,6 +9,7 @@ public class Controller implements ActionListener {
 
     private Model model = new Model();
     private IView view1;
+    private double valueCelsius;
 
     public Controller(IView view) {
         view1 = view;
@@ -17,14 +18,27 @@ public class Controller implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent event) throws NumberFormatException {
         try {
+            //перевод введенного значения в число
             double degree = Double.parseDouble(view1.getInputText());
-            if (view1.getInputChoice() == 0) {
+            //определяем входную шкалу(контроллер)
+ //           IScale inputScale = view1.getInputScale(view1.getInputChoice());
+            IScale inputScale = view1.getInputScale();
+            //устанавливаем в шкалу прочитанное значение(контроллер)
+            inputScale.setValue(degree);
+
+        //TODO Сделать через модель, интерфейс и классы шкал перенести в модель
+            //перевод значения в Цельсий(это работа модели)
+            valueCelsius = inputScale.convertToCelsius();
+
+      /*      if (view1.getInputChoice() == 0) {
                 model.setValueFahrenheit(degree);
             } else if (view1.getInputChoice() == 1) {
                 model.setValueCelsius(degree);
             } else {
                 model.setValueKelvin(degree);
-            }
+            }*/
+
+
             RefreshView();
         } catch (NumberFormatException e) {
             view1.showInputErrorMessage();
@@ -32,7 +46,17 @@ public class Controller implements ActionListener {
     }
 
     private void RefreshView() {
-        if (model.getValueKelvin() < 0) {
+        //определяем шкалу результата(контроллер)
+//        IScale outputScale = view1.getOutScale(view1.getOutputChoice());
+        IScale outputScale = view1.getOutputScale();
+        //перевод значения из Цельсия в нужную шкалу(модель)
+        outputScale.convertFromCelsius(valueCelsius);
+        //установка значения результата(контроллер)
+        view1.setOutputDegree(outputScale.getValue());
+
+
+
+ /*       if (model.getValueKelvin() < 0) {
             view1.showTemperatureErrorMessage();
         } else {
             if (view1.getOutputChoice() == 0) {
@@ -42,6 +66,6 @@ public class Controller implements ActionListener {
             } else {
                 view1.setOutputDegree(model.getValueKelvin());
             }
-        }
+        }*/
     }
 }

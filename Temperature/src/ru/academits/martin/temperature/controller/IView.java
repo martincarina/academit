@@ -6,11 +6,19 @@ public interface IView {
 
     String getInputText();
 
-    int getInputChoice();
+/*    int getInputChoice();
 
     int getOutputChoice();
 
+    IScale getInputScale(int number);
+
+    IScale getOutScale(int number);*/
+
+    IScale getInputScale();
+
+    IScale getOutputScale();
+
     void showInputErrorMessage();
 
-    void showTemperatureErrorMessage();
+    void showTemperatureErrorMessage();//TODO
 }

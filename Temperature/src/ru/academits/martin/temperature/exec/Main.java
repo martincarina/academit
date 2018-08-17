@@ -8,12 +8,7 @@ public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             MyView frame1 = new MyView();
-            frame1.setTitle("Конвертер температур");
-            frame1.pack();
-            frame1.setLocationRelativeTo(null);
-            frame1.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            frame1.setResizable(false);
-            frame1.setVisible(true);
+            frame1.start();
         });
     }
 }
