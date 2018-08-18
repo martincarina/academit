@@ -1,4 +1,4 @@
-package ru.academits.martin.temperature.controller;
+package ru.academits.martin.temperature.model;
 
 public class FahrenheitScale implements IScale {
 

@@ -1,4 +1,4 @@
-package ru.academits.martin.temperature.controller;
+package ru.academits.martin.temperature.model;
 
 public class KelvinScale implements IScale {
     private static final String NAME = "Кельвин";

@@ -1,6 +1,10 @@
 package ru.academits.martin.temperature.view;
 
 import ru.academits.martin.temperature.controller.*;
+import ru.academits.martin.temperature.model.CelsiusScale;
+import ru.academits.martin.temperature.model.FahrenheitScale;
+import ru.academits.martin.temperature.model.IScale;
+import ru.academits.martin.temperature.model.KelvinScale;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,25 +17,21 @@ public class MyView extends JFrame implements IView {
     private JTextField textFieldInput = new JTextField(20);
     private JTextField textFieldOutput = new JTextField(20);
 
-    private IScale[] scales = {new FahrenheitScale(), new CelsiusScale(), new KelvinScale()};//TODO потом на ArrayList поменять
-    //    private ArrayList<IScale> scales = new ArrayList<>();// = new ArrayList<>(Arrays.asList(new FahrenheitScale(),new CelsiusScale(), new KelvinScale()));
-    private String[] elements = new String[scales.length];
+    private ArrayList<IScale> scales = new ArrayList<>(Arrays.asList(new FahrenheitScale(), new CelsiusScale(), new KelvinScale()));
 
-    private String[] getScales(IScale[] scales) {
-        for (int i = 0; i < scales.length; i++) {
-            elements[i] = scales[i].getNAME();
+
+    private String[] getScalesNames(ArrayList<IScale> scales) {
+        String[] elements = new String[scales.size()];
+        for (int i = 0; i < scales.size(); i++) {
+            elements[i] = scales.get(i).getNAME();
         }
         return elements;
     }
 
-    /*   private String[] elements = new String[]{"Фаренгейт", "Цельсий", "Кельвин"};
-    private JComboBox<String> initCombo = new JComboBox<>(elements);
-    private JComboBox<String> finalCombo = new JComboBox<>(elements);*/
 
-    private JComboBox<String> initCombo = new JComboBox<>(getScales(scales));
-    private JComboBox<String> finalCombo = new JComboBox<>(getScales(scales));
+    private JComboBox<String> initCombo = new JComboBox<>(getScalesNames(scales));
+    private JComboBox<String> finalCombo = new JComboBox<>(getScalesNames(scales));
 
-    // private JComboBox<IScale> initCombo = new JComboBox<IScale>();
 
     public MyView() {
         setLayout(new FlowLayout());
@@ -83,40 +83,18 @@ public class MyView extends JFrame implements IView {
         return textFieldInput.getText();
     }
 
- /*   @Override
-    //выдает номер шкалы ввода в списке
-    public int getInputChoice() {
-        return initCombo.getSelectedIndex();
-    }
-
-    @Override
-    //выдает номер шкалы результата в списке
-    public int getOutputChoice() {
-        return finalCombo.getSelectedIndex();
-    }
-
-    @Override
-    public IScale getInputScale(int number) {
-        return scales[number];
-    }
-
-    @Override
-    public IScale getOutScale(int number) {
-        return scales[number];
-    }*/
-
     @Override
     public IScale getInputScale() {
-        return scales[initCombo.getSelectedIndex()];
+        return scales.get(initCombo.getSelectedIndex());
     }
 
     @Override
     public IScale getOutputScale() {
-        return scales[finalCombo.getSelectedIndex()];
+        return scales.get(finalCombo.getSelectedIndex());
     }
 
     @Override
-    public void showTemperatureErrorMessage() {//TODO сейчас не работает
+    public void showTemperatureErrorMessage() {
         JOptionPane.showMessageDialog(this, "Не существует температуры ниже 0 K. Введите другое значение.", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
         textFieldInput.setText(null);
         textFieldOutput.setText(null);
