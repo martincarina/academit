@@ -6,32 +6,20 @@ public class FahrenheitScale implements IScale {
     private static final double ABSOLUTE_ZERO = -459.67;
     private static final double ZERO_FAHRENHEIT = 32;
 
-    private double value;
-
-    public String getNAME() {
+    public String getName() {
         return NAME;
     }
 
     @Override
-    public double getValue() {
-        return value;
-    }
-
-    @Override
-    public void setValue(double value) throws NumberFormatException {
+    public double convertToCelsius(double value) {
         if (value < ABSOLUTE_ZERO) {
-            throw new NumberFormatException();
+            throw new IllegalArgumentException("Температура не может быть ниже абсолютного нуля.");
         }
-        this.value = value;
+        return (value - ZERO_FAHRENHEIT) * 5 / 9;
     }
 
     @Override
-    public double convertToCelsius() {
-        return (this.value - ZERO_FAHRENHEIT) * 5 / 9;
-    }
-
-    @Override
-    public void convertFromCelsius(double valueCelsius) {
-        this.value = valueCelsius * 9 / 5 + ZERO_FAHRENHEIT;
+    public double convertFromCelsius(double valueCelsius) {
+        return valueCelsius * 9 / 5 + ZERO_FAHRENHEIT;
     }
 }

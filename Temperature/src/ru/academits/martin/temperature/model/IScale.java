@@ -2,13 +2,9 @@ package ru.academits.martin.temperature.model;
 
 public interface IScale {
 
-    String getNAME();
+    String getName();
 
-    double getValue();
+    double convertToCelsius(double value);
 
-    void setValue(double value);
-
-    double convertToCelsius();
-
-    void convertFromCelsius(double valueCelsius);
+    double convertFromCelsius(double valueCelsius);
 }

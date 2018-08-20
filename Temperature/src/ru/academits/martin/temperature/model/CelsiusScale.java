@@ -4,33 +4,21 @@ public class CelsiusScale implements IScale {
     private static final String NAME = "Цельсий";
     private static final double ABSOLUTE_ZERO = -273.15;
 
-    private double value;
-
     @Override
-    public String getNAME() {
+    public String getName() {
         return NAME;
     }
 
     @Override
-    public double getValue() {
-        return value;
-    }
-
-    @Override
-    public void setValue(double value) throws NumberFormatException {
+    public double convertToCelsius(double value) {
         if (value < ABSOLUTE_ZERO) {
-            throw new NumberFormatException();
+            throw new IllegalArgumentException("Температура не может быть ниже абсолютного нуля.");
         }
-        this.value = value;
-    }
-
-    @Override
-    public double convertToCelsius() {
         return value;
     }
 
     @Override
-    public void convertFromCelsius(double valueCelsius) {
-        this.value = valueCelsius;
+    public double convertFromCelsius(double valueCelsius) {
+        return valueCelsius;
     }
 }

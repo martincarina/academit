@@ -8,32 +8,30 @@ import java.awt.event.ActionListener;
 public class Controller implements ActionListener {
 
     private Model model = new Model();
-    private IView view1;
+    private IView view;
+    private double result;
 
     public Controller(IView view) {
-        view1 = view;
+        this.view = view;
     }
 
     @Override
     public void actionPerformed(ActionEvent event) throws NumberFormatException {
         try {
-            double degree = Double.parseDouble(view1.getInputText());
-
+            double degree = Double.parseDouble(view.getInputText());
             try {
-                view1.getInputScale().setValue(degree);
+                result = model.convertTemperature(view.getInputScale(), view.getOutputScale(), degree);
             } catch (IllegalArgumentException e1) {
-                view1.showTemperatureErrorMessage();
+                view.showTemperatureErrorMessage();
                 return;
             }
-
-            model.convertTemperature(view1.getInputScale(), view1.getOutputScale());
             refreshView();
         } catch (NumberFormatException e) {
-            view1.showInputErrorMessage();
+            view.showInputErrorMessage();
         }
     }
 
     private void refreshView() {
-        view1.setOutputDegree(view1.getOutputScale().getValue());
+        view.setOutputDegree(result);
     }
 }

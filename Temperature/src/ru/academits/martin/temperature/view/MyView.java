@@ -16,22 +16,9 @@ import java.util.Locale;
 public class MyView extends JFrame implements IView {
     private JTextField textFieldInput = new JTextField(20);
     private JTextField textFieldOutput = new JTextField(20);
-
     private ArrayList<IScale> scales = new ArrayList<>(Arrays.asList(new FahrenheitScale(), new CelsiusScale(), new KelvinScale()));
-
-
-    private String[] getScalesNames(ArrayList<IScale> scales) {
-        String[] elements = new String[scales.size()];
-        for (int i = 0; i < scales.size(); i++) {
-            elements[i] = scales.get(i).getNAME();
-        }
-        return elements;
-    }
-
-
     private JComboBox<String> initCombo = new JComboBox<>(getScalesNames(scales));
     private JComboBox<String> finalCombo = new JComboBox<>(getScalesNames(scales));
-
 
     public MyView() {
         setLayout(new FlowLayout());
@@ -60,6 +47,14 @@ public class MyView extends JFrame implements IView {
         JButton button = new JButton("Конвертировать");
         button.addActionListener(controller);
         add(button);
+    }
+
+    private String[] getScalesNames(ArrayList<IScale> scales) {
+        String[] elements = new String[scales.size()];
+        for (int i = 0; i < scales.size(); i++) {
+            elements[i] = scales.get(i).getName();
+        }
+        return elements;
     }
 
     public void start() {
@@ -95,7 +90,7 @@ public class MyView extends JFrame implements IView {
 
     @Override
     public void showTemperatureErrorMessage() {
-        JOptionPane.showMessageDialog(this, "Не существует температуры ниже 0 K. Введите другое значение.", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Не существует температуры ниже абсолютного нуля. Введите другое значение.", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
         textFieldInput.setText(null);
         textFieldOutput.setText(null);
     }
