@@ -9,7 +9,6 @@ public class Controller implements ActionListener {
 
     private Model model = new Model();
     private IView view;
-    private double result;
 
     public Controller(IView view) {
         this.view = view;
@@ -20,18 +19,12 @@ public class Controller implements ActionListener {
         try {
             double degree = Double.parseDouble(view.getInputText());
             try {
-                result = model.convertTemperature(view.getInputScale(), view.getOutputScale(), degree);
+                view.setOutputDegree(model.convertTemperature(view.getInputScale(), view.getOutputScale(), degree));
             } catch (IllegalArgumentException e1) {
                 view.showTemperatureErrorMessage();
-                return;
             }
-            refreshView();
         } catch (NumberFormatException e) {
             view.showInputErrorMessage();
         }
-    }
-
-    private void refreshView() {
-        view.setOutputDegree(result);
     }
 }
