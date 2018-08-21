@@ -14,5 +14,5 @@ public interface IView {
 
     void showInputErrorMessage();
 
-    void showTemperatureErrorMessage();//TODO
+    void showTemperatureErrorMessage();
 }
