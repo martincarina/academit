@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="rus">
+<head>
+    <meta charset="UTF-8">
+    <title>Организация праздника</title>
+</head>
+<body>
+<h2>Информация об имениннике</h2>
+<form action="/my.php" method="post">
+    <label for="name">Имя именинника:</label>
+    <input type="text" id=name name="name"/>
+    <br/>
+    <label>
+        Юбилей <input type="checkbox" name="anniversary">
+    </label>
+    <h2>Информация о формате праздника</h2>
+    <div>
+        <label>
+            Место проведения:
+            <input type="radio" value="1" name="place" checked=checked> Улица
+            <input type="radio" value="2" name="place"> Квартира
+            <input type="radio" value="3" name="place"> Ресторан
+        </label>
+    </div>
+    <p>
+        <label>
+            Количество гостей:
+            <select name="number">
+                <option value="4">до 5 человек</option>
+                <option value="9">5-10 человек</option>
+                <option value="14">10-15 человек</option>
+                <option value="19">15-20 человек</option>
+                <option value="20">более 20 человек</option>
+            </select>
+
+        </label>
+    </p>
+    <p>
+        <label>
+            Меню
+            <br/>
+            <select multiple name="Dish[]">
+                <option value="Нарезка">Нарезка</option>
+                <option selected value="Пирог">Пирог</option>
+                <option value="Суп">Суп</option>
+                <option value="Горячее">Горячее</option>
+                <option value="Торт">Торт</option>
+            </select>
+        </label>
+    </p>
+    <div>
+        <label>
+            Дополнительная информация:
+            <br/>
+            <textarea rows="10" cols="45" name="text"></textarea>
+        </label>
+        <br/>
+        <button type="submit"> Отправить данные</button>
+    </div>
+</form>
+</body>
+</html>
