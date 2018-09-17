@@ -1,0 +1,29 @@
+.page-header {
+    font-size: 50px;
+    font-weight: lighter;
+    right: 167px;
+}
+
+.content-header {
+    color: #378DB2;
+    font-weight: bold
+
+}
+
+body {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    background-color: #FEEED6;
+    font-family: sans-serif;
+    color: #676565;
+    font-size: 28px;
+}
+
+.paragraph{
+    text-indent: 1em;
+}
+
+.price {
+    text-decoration: line-through;
+}
