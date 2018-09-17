@@ -1,25 +1,32 @@
 .page-header {
-    font-size: 37px;
+    font-size: 28px;
     font-weight: 500;
+    line-height:1.1;
 }
 
 .content-header {
     color: #378DB2;
     font-weight: bold;
-   }
+}
+
+.content {
+    font-size: 16px;
+}
 
 body {
     position: absolute;
-    margin-left:147px;
-    margin-right:220px;
+    margin-left:315px;
+    width: 715px;
     background-color: #FEEED6;
     font-family: sans-serif;
     color: #676565;
-    font-size: 21px;
+    font-size: 15px;
+    line-height:0.75;
 }
 
 .paragraph{
     text-indent: 1em;
+    line-height: 1.5;
 }
 
 .price {
